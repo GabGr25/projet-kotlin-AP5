@@ -9,12 +9,12 @@ import com.example.projet_kotlin_ap5.ui.theme.YellowColor
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
 
 @Composable
-fun ButtonText(text: String){
+fun ButtonText(text: String, color: Color){
     Text(
         text = text,
         fontSize = 18.sp,
         fontFamily = lexendFontFamily,
-        color = YellowColor,
+        color = color,
         fontWeight = FontWeight.SemiBold,
     )
 }

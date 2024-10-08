@@ -48,8 +48,11 @@ import com.example.projet_kotlin_ap5.components.ButtonText
 import com.example.projet_kotlin_ap5.components.Caroussel
 import com.example.projet_kotlin_ap5.components.SquareView
 import com.example.projet_kotlin_ap5.components.TitleText
+import com.example.projet_kotlin_ap5.pages.Album
+import com.example.projet_kotlin_ap5.pages.Artiste
 import com.example.projet_kotlin_ap5.pages.Home
 import com.example.projet_kotlin_ap5.pages.Navbar
+import com.example.projet_kotlin_ap5.pages.NavbarState
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 import com.example.projet_kotlin_ap5.ui.theme.ProjetkotlinAP5Theme
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
@@ -69,6 +72,7 @@ class MainActivity : ComponentActivity() {
                             pathAccueil = "Android",
                             pathMySong = "Song",
                             paddingBottom = PaddingValues(),
+                            selected = NavbarState.stateNavbar.value,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()
@@ -81,9 +85,20 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        Home(
-                            modifier = Modifier
-                        )
+                        when(NavbarState.stateNavbar.value){
+                            1->
+                                Home(
+                                    modifier = Modifier
+                                )
+                            2->
+                                Album(
+                                    modifier = Modifier
+                                )
+                            3->
+                                Artiste(
+                                    modifier = Modifier
+                                )
+                        }
                     }
                 }
             }
