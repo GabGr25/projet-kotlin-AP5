@@ -14,11 +14,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.projet_kotlin_ap5.pages.Album
 import com.example.projet_kotlin_ap5.pages.Artiste
-import com.example.projet_kotlin_ap5.pages.Home
 import com.example.projet_kotlin_ap5.pages.Navbar
 import com.example.projet_kotlin_ap5.pages.NavbarState
+import com.example.projet_kotlin_ap5.pages.Home
+import com.example.projet_kotlin_ap5.pages.PlayerAudio
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 import com.example.projet_kotlin_ap5.ui.theme.ProjetkotlinAP5Theme
 
@@ -29,44 +33,55 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProjetkotlinAP5Theme {
+                val navController = rememberNavController()
+
+                // Scaffold with Navbar at the bottom
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     containerColor = BackgroundColor,
                     bottomBar = {
                         Navbar(
-                            pathAccueil = "Android",
-                            pathMySong = "Song",
-                            paddingBottom = PaddingValues(),
-                            selected = NavbarState.stateNavbar.value,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()
-                                .height(74.dp)
-                    )}
+                                .height(74.dp),
+                            selected = NavbarState.stateNavbar.value,
+                            navController = navController
+                        )
+                    }
                 ) { innerPadding ->
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        when(NavbarState.stateNavbar.value){
-                            1->
-                                Home(
-                                    modifier = Modifier
-                                )
-                            2->
-                                Album(
-                                    modifier = Modifier
-                                )
-                            3->
-                                Artiste(
-                                    modifier = Modifier
-                                )
+                        // NavHost for managing navigation between different screens
+                        NavHost(
+                            navController = navController,
+                            startDestination = "Home",  // Starting screen
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            // Define your composable screens here
+                            composable("Home") {
+                                Home(navController = navController)
+                            }
+
+                            composable("Album") {
+                                Album(navController = navController)
+                            }
+
+                            composable("Artiste") {
+                                Artiste(navController = navController)
+                            }
+
+                            composable("player_audio/{imageName}") { backStackEntry ->
+                                val imageName = backStackEntry.arguments?.getString("imageName")
+                                PlayerAudio(imageName = imageName, navController = navController)
+                            }
+                            }
                         }
                     }
                 }
             }
         }
     }
-}

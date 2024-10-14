@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.pages.PlayerAudio
 
 fun getImageResourceId(context: Context, nameImage: String): Int? {
     val resourceId = context.resources.getIdentifier(nameImage, "drawable", context.packageName)
@@ -20,7 +22,7 @@ fun getImageResourceId(context: Context, nameImage: String): Int? {
 }
 
 @Composable
-fun ClickableImage(nameImage: String, sizeImage: Dp) {
+fun ClickableImage(navController: NavController, nameImage: String, sizeImage: Dp) {
     val context = LocalContext.current
     // Obtenir l'identifiant de l'image dynamiquement à partir du nom
     val imageId = getImageResourceId(context, nameImage)
@@ -34,7 +36,7 @@ fun ClickableImage(nameImage: String, sizeImage: Dp) {
                 .size(sizeImage)
                 .clip(RoundedCornerShape(5.dp))
                 .clickable {
-                    // Action lors du clic
+                    navController.navigate("player_audio/$nameImage")
                 },
             contentScale = ContentScale.Crop // Ajustement de l'image
         )
