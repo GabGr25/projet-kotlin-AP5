@@ -41,10 +41,6 @@ class MainActivity : ComponentActivity() {
                     containerColor = BackgroundColor,
                     bottomBar = {
                         Navbar(
-                            pathAccueil = "Home",  // Route vers l'écran A (Home)
-                            pathMySong = "Album",   // Route vers l'écran B (Album)
-                            pathArtiste = "Artiste",
-                            paddingBottom = PaddingValues(),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()

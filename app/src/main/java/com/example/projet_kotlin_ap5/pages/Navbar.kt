@@ -35,13 +35,9 @@ object NavbarState{
 
 @Composable
 fun Navbar(
-    pathAccueil: String,
-    pathMySong: String,
-    paddingBottom: PaddingValues,
     modifier: Modifier,
     selected: Int,
-    navController: NavController,  // Ajouter le NavController ici
-    pathArtiste: String
+    navController: NavController,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
