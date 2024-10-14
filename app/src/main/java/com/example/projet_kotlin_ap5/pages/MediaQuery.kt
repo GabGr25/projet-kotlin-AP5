@@ -26,8 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.projet_kotlin_ap5.AudioModel
+import com.example.projet_kotlin_ap5.MusicDatabase
 import com.example.projet_kotlin_ap5.components.TitleText
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -39,7 +42,7 @@ fun MediaQuery(modifier: Modifier){
 
     // Charger les fichiers musicaux lorsque le composable est chargé
     LaunchedEffect(Unit) {
-        loadMusicFiles(contentResolver)
+        //loadMusicFiles(contentResolver)
     }
     val rememberScrollableState = rememberScrollableState { 0F }
     Column(
@@ -62,14 +65,13 @@ fun MediaQuery(modifier: Modifier){
     }
 }
 
-    @SuppressLint("Recycle", "Range")
-    suspend fun loadMusicFiles(contentResolver: ContentResolver) {
-        return withContext(Dispatchers.IO) {
-            val songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
-            // Obtenir le chemin du répertoire Music
-            val musicDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).absolutePath
-
-        }
-    }
+//private fun displayMusicFromDatabase() {
+//    val db = MusicDatabase.getDatabase(this)
+//    CoroutineScope(Dispatchers.IO).launch {
+//        val musicList = db.songDao().getAllMusics()
+//        musicList.forEach { music ->
+//            Log.d("MainActivity", "ID: ${music.id}, Name: ${music.name}, Duration: ${music.duration} ms")
+//        }
+//    }
+//}
 

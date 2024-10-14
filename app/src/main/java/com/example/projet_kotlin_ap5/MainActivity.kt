@@ -57,7 +57,11 @@ import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import com.example.projet_kotlin_ap5.entities.SongEntity
 import java.io.File
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -113,19 +117,20 @@ class MainActivity : ComponentActivity() {
             loadMusicFiles()
         } else {
             // Permission refusée
-            Log.e("MainActivity", "Permission READ_EXTERNAL_STORAGE refusée")
+            Log.e("MainActivity", "Permission READ_MEDIA_AUDIO refusée")
         }
     }
 
     // Fonction pour charger les fichiers audio à partir de MediaStore
     private fun loadMusicFiles() {
-        val musicList = mutableListOf<String>()
+        val musicList = mutableListOf<SongEntity>()
 
         // Définit les colonnes que nous voulons récupérer
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.DISPLAY_NAME,
-            MediaStore.Audio.Media.DURATION
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.RELATIVE_PATH
         )
 
         // Filtre pour récupérer uniquement les fichiers du dossier Music
@@ -145,157 +150,26 @@ class MainActivity : ComponentActivity() {
             val idColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
             val nameColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
             val durationColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+            val pathNameColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.RELATIVE_PATH)
 
             while (it.moveToNext()) {
                 val id = it.getLong(idColumn)
                 val name = it.getString(nameColumn)
                 val duration = it.getInt(durationColumn)
+                val pathName = it.getString(pathNameColumn)
 
                 // Ajouter les informations sur la musique à la liste
-                musicList.add("ID: $id, Name: $name, Duration: $duration ms")
+                //musicList.add("ID: $id, Name: $name, Duration: $duration ms, pathName: $pathName")
+                musicList.add(SongEntity(id, pathName, name, duration))
             }
         }
 
-        // Afficher la liste des fichiers audio dans la console
-        musicList.forEach { Log.d("Music", it) }
+        // Insertion des données dans la base de données
+        val database = MusicDatabase.getDatabase(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            // TODO: Faire un autre système pour éviter de vider entièrement la base de données
+            database.songDao().deleteAll() // Vide la DB
+            database.songDao().insertAll(musicList) // Réinsère l'ensemble des musiques
+        }
     }
-
-//    val musicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-//    private lateinit var permissionsLauncher: ActivityResultLauncher<Array<String>>
-//    private val PERMISSION_TAG = "MusicPermissions"
-//
-//    private fun checkPermissions(): Boolean {
-//        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
-//            ContextCompat.checkSelfPermission(
-//                this, Manifest.permission.READ_MEDIA_AUDIO
-//            ) == PackageManager.PERMISSION_GRANTED
-//        } else { // Android 12 et inférieurs
-//            ContextCompat.checkSelfPermission(
-//                this, Manifest.permission.READ_EXTERNAL_STORAGE
-//            ) == PackageManager.PERMISSION_GRANTED
-//        }
-//    }
-//
-//    private fun demanderPermissions() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
-//            permissionsLauncher.launch(
-//                arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
-//            )
-//        } else { // Android 12 et inférieurs
-//            permissionsLauncher.launch(
-//                arrayOf(
-//                    Manifest.permission.READ_EXTERNAL_STORAGE,
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                )
-//            )
-//        }
-//    }
-//
-//    private fun initPermissionsLauncher() {
-//        permissionsLauncher = registerForActivityResult(
-//            ActivityResultContracts.RequestMultiplePermissions()
-//        ) { permissions ->
-//            var allGranted = true
-//            permissions.entries.forEach { permission ->
-//                if (!permission.value) {
-//                    allGranted = false
-//                    Log.d(PERMISSION_TAG, "Permission refusée : ${permission.key}")
-//                } else {
-//                    Log.d(PERMISSION_TAG, "Permission accordée : ${permission.key}")
-//                }
-//            }
-//            if (allGranted) {
-//                accéderAuxFichiers(musicDirectory)
-//            } else {
-//                // Informer l'utilisateur que les permissions sont nécessaires
-//                Log.d(PERMISSION_TAG, "Toutes les permissions n'ont pas été accordées.")
-//            }
-//        }
-//    }
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//
-//        // Initialiser le launcher des permissions
-//        initPermissionsLauncher()
-//
-//        if (checkPermissions()) {
-//            Log.d("dev", "Accès aux fichiers")
-//            accéderAuxFichiers(musicDirectory)
-//        } else {
-//            Log.d("dev", "demande de permission")
-//            demanderPermissions()
-//        }
-//
-//        setContent {
-//            ProjetkotlinAP5Theme {
-//                Scaffold(
-//                    modifier = Modifier.fillMaxSize(),
-//                    containerColor = BackgroundColor,
-//                    bottomBar = {
-//                        Navbar(
-//                            pathAccueil = "Android",
-//                            pathMySong = "Song",
-//                            paddingBottom = PaddingValues(),
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .wrapContentHeight()
-//                                .height(74.dp)
-//                    )}
-//                ) { innerPadding ->
-//
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding)
-//                    ) {
-//                        Home(
-//                            modifier = Modifier
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//
-//    private fun accéderAuxFichiers(directory: File) {
-//
-//        Log.d("dev", "Accès aux fichiers en cours...")
-//
-//        val musicDirectory: File? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Android 10+
-//            // Utiliser Scoped Storage
-//            getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-//        } else {
-//            // Utiliser l'ancien chemin
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-//        }
-//
-//
-//        if (musicDirectory != null && musicDirectory.exists() && musicDirectory.isDirectory) {
-//            Log.d("dev", "Listing des fichiers de ${musicDirectory.absolutePath} ...")
-//
-//            val filesAndDirs = musicDirectory.listFiles()
-//
-//            if (filesAndDirs != null) {
-//                Log.d("dev", "Nombre de fichiers/dossiers dans le directory ${filesAndDirs.size}")
-//
-//                for (file in filesAndDirs) {
-//                    Log.d("dev", "UN FICHIER")
-//
-//                    if (file.isFile) {
-//                        Log.d("dev", "Fichier : ${file.name}")
-//                    } else if (file.isDirectory) {
-//                        Log.d("dev", "Dossier : ${file.name}")
-//                    }
-//                }
-//            } else {
-//                Log.d("dev", "Aucun fichier ou dossier trouvé dans le répertoire Music.")
-//            }
-//        } else {
-//            Log.d("dev", "Le répertoire Music n'existe pas ou n'est pas un dossier.")
-//        }
-//    }
-
 }
