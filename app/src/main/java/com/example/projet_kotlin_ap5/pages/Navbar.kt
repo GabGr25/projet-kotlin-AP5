@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.projet_kotlin_ap5.MainActivity
+import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.ButtonText
 import com.example.projet_kotlin_ap5.ui.theme.NavbarBackgroundColor
 import com.example.projet_kotlin_ap5.ui.theme.WhiteColor
@@ -35,31 +34,43 @@ object NavbarState{
 }
 
 @Composable
-fun Navbar(pathAccueil: String, pathMySong: String, paddingBottom: PaddingValues, modifier: Modifier, selected: Int) {
+fun Navbar(
+    pathAccueil: String,
+    pathMySong: String,
+    paddingBottom: PaddingValues,
+    modifier: Modifier,
+    selected: Int,
+    navController: NavController,  // Ajouter le NavController ici
+    pathArtiste: String
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()  // Prend toute la largeur
             .wrapContentHeight()  // Seulement la hauteur nécessaire
-            .border(1.dp, Color(16,16,16))
+            .border(1.dp, Color(16, 16, 16))
             .background(NavbarBackgroundColor)
             .padding(bottom = 25.dp)
             .padding(top = 10.dp)
     ) {
         NavbarButton("Home", isSelected = (selected == 1), modifier = Modifier.weight(1f)) {
             NavbarState.stateNavbar.value = 1
+            navController.navigate("Home")  // Navigation vers ScreenA
         }
         VerticalDivider(Modifier.height(20.dp))
         NavbarButton("Album", isSelected = (selected == 2), modifier = Modifier.weight(1f)) {
             NavbarState.stateNavbar.value = 2
+            navController.navigate("Album")  // Navigation vers ScreenB
         }
         VerticalDivider(Modifier.height(20.dp))
         NavbarButton("Artiste", isSelected = (selected == 3), modifier = Modifier.weight(1f)) {
             NavbarState.stateNavbar.value = 3
+            navController.navigate("Artiste")
         }
     }
 }
+
 
 @Composable
 fun NavbarButton(text: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {

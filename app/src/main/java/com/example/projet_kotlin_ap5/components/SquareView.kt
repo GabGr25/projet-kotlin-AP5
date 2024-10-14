@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun SquareView(firstColumn: List<String>, secondColumn: List<String>){
+fun SquareView(navcontroller: NavController, firstColumn: List<String>, secondColumn: List<String>){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -23,7 +24,7 @@ fun SquareView(firstColumn: List<String>, secondColumn: List<String>){
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             for ( name in firstColumn){
-                ClickableImage(name, 175.dp)
+                ClickableImage(navcontroller, name, 175.dp)
             }
         }
         Spacer(modifier = Modifier.width(20.dp))
@@ -31,7 +32,7 @@ fun SquareView(firstColumn: List<String>, secondColumn: List<String>){
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             for ( name in secondColumn){
-                ClickableImage(name, 175.dp)
+                ClickableImage(navcontroller,name, 175.dp)
             }
         }
     }

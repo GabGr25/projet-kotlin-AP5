@@ -7,11 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.TitleText
 import com.example.projet_kotlin_ap5.components.VerticalCarousel
 
 @Composable
-fun Album(modifier: Modifier){
+fun Album(navController: NavController, modifier: Modifier = Modifier){
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -19,7 +20,7 @@ fun Album(modifier: Modifier){
         verticalArrangement = Arrangement.Top
     ) {
         TitleText("Albums préférés", 0.55f)
-        VerticalCarousel(
+        VerticalCarousel(navController,
             listOf(
                 "img1",
                 "img2",

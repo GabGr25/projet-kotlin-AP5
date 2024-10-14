@@ -6,9 +6,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun VerticalCarousel(items: List<String>) {
+fun VerticalCarousel(navcontroller: NavController, items: List<String>) {
 
     val pairedItems = items.chunked(2)
 
@@ -23,7 +24,7 @@ fun VerticalCarousel(items: List<String>) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 for (item in pair) {
-                    ClickableImage(item, 175.dp)
+                    ClickableImage(navcontroller,item, 175.dp)
                 }
 
                 if (pair.size == 1) {
