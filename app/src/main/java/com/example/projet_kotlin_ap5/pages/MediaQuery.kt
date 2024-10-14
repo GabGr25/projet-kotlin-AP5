@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.projet_kotlin_ap5.AudioModel
 import com.example.projet_kotlin_ap5.MusicDatabase
 import com.example.projet_kotlin_ap5.components.TitleText
@@ -36,9 +38,6 @@ import kotlinx.coroutines.withContext
 @Composable
 fun MediaQuery(modifier: Modifier){
 
-    val context = LocalContext.current
-    val contentResolver = context.contentResolver
-    var musicFiles by remember { mutableStateOf(listOf<AudioModel>()) }
 
     // Charger les fichiers musicaux lorsque le composable est chargé
     LaunchedEffect(Unit) {
@@ -55,23 +54,5 @@ fun MediaQuery(modifier: Modifier){
     ) {
         TitleText("Recherche de contenu audio", 0.66f)
 
-        // Affichage des fichiers musicaux
-        musicFiles.forEach { audioModel ->
-            Text(text = "Fichier $audioModel",
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
     }
 }
-
-//private fun displayMusicFromDatabase() {
-//    val db = MusicDatabase.getDatabase(this)
-//    CoroutineScope(Dispatchers.IO).launch {
-//        val musicList = db.songDao().getAllMusics()
-//        musicList.forEach { music ->
-//            Log.d("MainActivity", "ID: ${music.id}, Name: ${music.name}, Duration: ${music.duration} ms")
-//        }
-//    }
-//}
-
