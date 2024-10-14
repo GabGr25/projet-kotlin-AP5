@@ -15,10 +15,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.projet_kotlin_ap5.pages.Album
-import com.example.projet_kotlin_ap5.pages.Artiste
 import com.example.projet_kotlin_ap5.pages.Home
 import com.example.projet_kotlin_ap5.pages.Navbar
 import com.example.projet_kotlin_ap5.pages.NavbarState
+import com.example.projet_kotlin_ap5.pages.Play
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 import com.example.projet_kotlin_ap5.ui.theme.ProjetkotlinAP5Theme
 
@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier
                                 )
                             3->
-                                Artiste(
+                                Play(
                                     modifier = Modifier
                                 )
                         }
