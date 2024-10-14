@@ -17,36 +17,57 @@ import com.example.projet_kotlin_ap5.R
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
+import com.example.projet_kotlin_ap5.components.PauseMusic
 
 @Composable
 fun PlayerAudio(imageName: String?, navController: NavController) {
     val context = LocalContext.current
 
-    Box(
+    // Ajout d'une couleur de fond temporaire pour mieux visualiser la zone occupée
+    Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
+            .fillMaxWidth()
+            .background(Color.Black),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Ajouter l'image au centre
+        // Premier bloc contenant les boutons en haut
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .padding(top = 32.dp, start = 32.dp, end = 32.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            CreateRoundButton(context, navController)
+            CreateFavoriteButton()
+        }
+
+        // Bloc avec l'image (prend une partie de l'espace disponible)
         imageName?.let {
             Image(
-                painter = painterResource(id = context.getImageResourceId(it)),
+                painter = painterResource(id = context.getImageResourceId(it)), // Vérifier l'ID de l'image
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(300.dp)
-                    .align(Alignment.Center)
             )
         }
-        CreateFavoriteButton()
-        CreateRoundButton(context, navController)
-        CreateParolesButton(context)
 
-
+        // Bloc avec le bouton Pause
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            PauseMusic()
+        }
+        CreateParolesButton()
     }
 }
 
 fun Context.getImageResourceId(imageName: String): Int {
+    // Cette méthode retourne -1 si l'image n'est pas trouvée, vérifiez le nom d'image utilisé
     return resources.getIdentifier(imageName, "drawable", packageName)
 }
-
