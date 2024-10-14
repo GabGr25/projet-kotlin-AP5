@@ -94,10 +94,10 @@ class MainActivity : ComponentActivity() {
             }
         }
         // Vérifier et demander les permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
             != PackageManager.PERMISSION_GRANTED) {
             // Demander la permission si elle n'est pas encore accordée
-            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_AUDIO)
         } else {
             // Si la permission est déjà accordée, récupérer les fichiers audio
             loadMusicFiles()
