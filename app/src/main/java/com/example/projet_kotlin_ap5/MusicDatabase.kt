@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.projet_kotlin_ap5.entities.SongEntity
 
-@Database(entities = [SongEntity::class], version = 3)
+@Database(entities = [SongEntity::class], version = 4)
 abstract class MusicDatabase : RoomDatabase() {
 
     abstract fun songDao(): SongDao
