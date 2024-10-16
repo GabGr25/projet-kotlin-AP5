@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.projet_kotlin_ap5.pages.Home
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.projet_kotlin_ap5.pages.Album
+import com.example.projet_kotlin_ap5.pages.Artiste
 import com.example.projet_kotlin_ap5.pages.Navbar
+import com.example.projet_kotlin_ap5.pages.NavbarState
+import com.example.projet_kotlin_ap5.pages.Home
+import com.example.projet_kotlin_ap5.pages.PlayerAudio
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 import com.example.projet_kotlin_ap5.ui.theme.ProjetkotlinAP5Theme
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
@@ -98,12 +107,12 @@ class MainActivity : ComponentActivity() {
                             pathAccueil = "Android",
                             pathMySong = "Song",
                             paddingBottom = PaddingValues(),
+                            selected = NavbarState.stateNavbar.value,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .height(74.dp)
-                        )
-                    }
+                        )}
                 ) { innerPadding ->
 
                     Box(
@@ -111,29 +120,25 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        Text(
-                            modifier = Modifier
-                                .clickable {
-                                    songViewModel.checkIfSongsExists()
-                                },
-                            text = "TEST DB",
-                            fontSize = 18.sp,
-                            fontFamily = lexendFontFamily,
-                            color = YellowColor,
-                            fontWeight = FontWeight.SemiBold,
-                            )
-                        Home(
-                            modifier = Modifier
-                        )
+                        when(NavbarState.stateNavbar.value){
+                            1->
+                                Home(
+                                    modifier = Modifier
+                                )
+                            2->
+                                Album(
+                                    modifier = Modifier
+                                )
+                            3->
+                                Artiste(
+                                    modifier = Modifier
+                                )
+                        }
                     }
                 }
             }
         }
-
-
-
     }
-
     // Used to refresh all the database by scanning the phone storage
     private fun loadMusicFiles() {
         Toaster.toastSomething(this, "Scan des fichiers en cours...")
