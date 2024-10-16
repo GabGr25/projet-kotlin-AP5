@@ -19,8 +19,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.projet_kotlin_ap5.pages.Album
 import com.example.projet_kotlin_ap5.pages.Artiste
+import com.example.projet_kotlin_ap5.pages.Home
 import com.example.projet_kotlin_ap5.pages.Navbar
 import com.example.projet_kotlin_ap5.pages.NavbarState
+import com.example.projet_kotlin_ap5.pages.Play
 import com.example.projet_kotlin_ap5.pages.Home
 import com.example.projet_kotlin_ap5.pages.PlayerAudio
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
