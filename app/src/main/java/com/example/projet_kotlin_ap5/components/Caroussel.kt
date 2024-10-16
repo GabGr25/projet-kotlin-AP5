@@ -8,9 +8,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun Caroussel(list: List<String>){
+fun Caroussel(navController: NavController, list: List<String>){
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -20,7 +21,7 @@ fun Caroussel(list: List<String>){
     ) {
         for ( name in list){
             item {
-                ClickableImage(name, 140.dp)
+                ClickableImage(navController = navController, name, 140.dp)
             }
         }
     }
