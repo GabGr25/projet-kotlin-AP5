@@ -24,7 +24,7 @@ fun VerticalCarousel(navcontroller: NavController, items: List<String>) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 for (item in pair) {
-                    ClickableImage(navcontroller,item, 175.dp)
+                    ClickableImage(item, 175.dp) { navcontroller.navigate("player_audio/$item") }
                 }
 
                 if (pair.size == 1) {

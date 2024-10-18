@@ -1,5 +1,6 @@
 package com.example.projet_kotlin_ap5.components
 
+import android.content.ComponentCallbacks
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,7 +23,7 @@ fun getImageResourceId(context: Context, nameImage: String): Int? {
 }
 
 @Composable
-fun ClickableImage(navController: NavController, nameImage: String, sizeImage: Dp) {
+fun ClickableImage(nameImage: String, sizeImage: Dp, callback: ()->Unit) {
     val context = LocalContext.current
     // Obtenir l'identifiant de l'image dynamiquement à partir du nom
     val imageId = getImageResourceId(context, nameImage)
@@ -36,7 +37,7 @@ fun ClickableImage(navController: NavController, nameImage: String, sizeImage: D
                 .size(sizeImage)
                 .clip(RoundedCornerShape(5.dp))
                 .clickable {
-                    navController.navigate("player_audio/$nameImage")
+                    callback()
                 },
             contentScale = ContentScale.Crop // Ajustement de l'image
         )

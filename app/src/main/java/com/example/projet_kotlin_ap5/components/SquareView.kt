@@ -24,7 +24,7 @@ fun SquareView(navcontroller: NavController, firstColumn: List<String>, secondCo
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             for ( name in firstColumn){
-                ClickableImage(navcontroller, name, 175.dp)
+                ClickableImage(name, 175.dp) { navcontroller.navigate("player_audio/$name") }
             }
         }
         Spacer(modifier = Modifier.width(20.dp))
@@ -32,7 +32,7 @@ fun SquareView(navcontroller: NavController, firstColumn: List<String>, secondCo
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             for ( name in secondColumn){
-                ClickableImage(navcontroller,name, 175.dp)
+                ClickableImage(name, 175.dp) { navcontroller.navigate("player_audio/$name") }
             }
         }
     }
