@@ -1,53 +1,68 @@
 package com.example.projet_kotlin_ap5.components
 
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.view.Gravity
-import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.projet_kotlin_ap5.R
+import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
 
 @Composable
-fun CreateParolesButton(context: Context): Button {
-    val buttonBackground = GradientDrawable().apply {
-        shape = GradientDrawable.RECTANGLE
-        cornerRadius = 70f
-        setColor(Color.TRANSPARENT)
-        setStroke(4, Color.GRAY)
+fun CreateParolesButton() {
+    val context = LocalContext.current
+
+    Button(
+        onClick = { ButtonClicked() },
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(50))
+            .border(2.dp, Color.Gray, RoundedCornerShape(50))
+            .height(64.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.microphone),
+                contentDescription = "Microphone Icon",
+                tint = Color.Gray, // Couleur de l'icône
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "Paroles",
+                color = Color.Gray,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = lexendFontFamily
+            )
+        }
     }
+}
 
-    return Button(context).apply {
-        text = "Paroles"
-        textSize = 18f
-        setTextColor(Color.GRAY)
-        background = buttonBackground
-        setPadding(20, 40, 20, 10)
-
-        val icon = ContextCompat.getDrawable(context, R.drawable.microphone)
-        icon?.let {
-            val wrappedIcon = DrawableCompat.wrap(it)
-            DrawableCompat.setTint(wrappedIcon, Color.GRAY)
-            wrappedIcon.setBounds(0, 0, 50, 50)
-            setCompoundDrawables(wrappedIcon, null, null, null)
-        }
-
-        compoundDrawablePadding = 10
-
-        layoutParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-            setMargins(16, 0, 16, 32)
-        }
-
-        setOnClickListener {
-            Toast.makeText(context, "Bouton 'Paroles' cliqué!", Toast.LENGTH_SHORT).show()
-        }
-    }
+fun ButtonClicked(){
+    //Afficher les paroles
 }

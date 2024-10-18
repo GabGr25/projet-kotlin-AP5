@@ -24,7 +24,6 @@ import com.example.projet_kotlin_ap5.MainActivity
 fun CreateRoundButton(context: Context = LocalContext.current, navController: NavController) {
     Box(
         modifier = Modifier
-            .offset(x = 32.dp, y = 32.dp)
             .size(64.dp)
             .clip(CircleShape)
             .background(Color(0xFF302F2F))
