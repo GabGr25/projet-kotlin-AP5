@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -26,14 +28,15 @@ import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
 fun CreateParolesButton() {
     val context = LocalContext.current
 
-    Box(
+    Button(
+        onClick = { ButtonClicked() },
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clip(RoundedCornerShape(50)) // Forme arrondie
-            .background(Color.Transparent) // Couleur de fond transparente
-            .border(2.dp, Color.Gray, RoundedCornerShape(50)) // Bordure grise
-            .height(64.dp) // Hauteur du bouton
+            .clip(RoundedCornerShape(50))
+            .border(2.dp, Color.Gray, RoundedCornerShape(50))
+            .height(64.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -58,4 +61,8 @@ fun CreateParolesButton() {
             )
         }
     }
+}
+
+fun ButtonClicked(){
+    //Afficher les paroles
 }
