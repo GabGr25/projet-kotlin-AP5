@@ -50,12 +50,10 @@ class MusicScanner(private val context: Context) {
                 val id = it.getLong(idColumn)
                 val fileName = it.getString(fileNameColumn)
                 val duration = it.getInt(durationColumn)
-                val pathName = it.getString(pathNameColumn)
+                val pathName = it.getString(pathNameColumn).removePrefix("Music/")
                 val album = it.getString(albumColumn)
                 val title = it.getString(titleColumn)
                 val artist = it.getString(artistColumn)
-
-
 
                 musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName))
             }

@@ -124,17 +124,17 @@ class MainActivity : ComponentActivity() {
                                 Home(navController = navController)
                             }
 
-                            composable("Album") {
-                                Album(navController = navController)
-                            }
-
-                            composable("Artiste") {
-                                Artiste(navController = navController)
-                            }
+//                            composable("Album") {
+//                                Album(navController = navController)
+//                            }
+//
+//                            composable("Artiste") {
+//                                Artiste(navController = navController)
+//                            }
 
                             // For the DEV screen only
                             composable("DEV") {
-                                Play(navController = navController)
+                                Play(navController = navController, songViewModel)
                             }
 
                             composable("player_audio/{imageName}") { backStackEntry ->
