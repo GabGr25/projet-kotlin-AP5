@@ -4,20 +4,26 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.R
+import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
-import com.example.projet_kotlin_ap5.components.PauseMusic
+import com.example.projet_kotlin_ap5.pages.MusicPlayer.Paused
 
 @Composable
 fun PlayerAudio(imageName: String?, navController: NavController) {
@@ -61,7 +67,9 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
-            PauseMusic()
+            ClickableImage("precedent", 100.dp, callback = { PreviousMusic()} )
+            PausePlayButton()
+            ClickableImage("suivant", 100.dp, callback = { NextMusic()} )
         }
         CreateParolesButton()
     }
@@ -70,4 +78,31 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
 fun Context.getImageResourceId(imageName: String): Int {
     // Cette méthode retourne -1 si l'image n'est pas trouvée, vérifiez le nom d'image utilisé
     return resources.getIdentifier(imageName, "drawable", packageName)
+}
+
+object MusicPlayer{
+    var Paused : MutableState<Boolean> = mutableStateOf(true)
+}
+
+@Composable
+fun PausePlayButton() {
+    val context = LocalContext.current
+
+    val isPaused = MusicPlayer.Paused
+
+    ClickableImage(
+        nameImage = if (isPaused.value) "pause" else "play",
+        sizeImage = 100.dp,
+        callback = {
+            isPaused.value = !isPaused.value
+        }
+    )
+}
+
+fun PreviousMusic(){
+    //Fonction pour passer à la musique précédente
+}
+
+fun NextMusic(){
+    //Fonction pour passer à la musique suivante
 }
