@@ -76,6 +76,11 @@ class MainActivity : ComponentActivity() {
                                 Artiste(navController = navController)
                             }
 
+                            // For the DEV screen only
+                            composable("DEV") {
+                                Play(navController = navController)
+                            }
+
                             composable("player_audio/{imageName}") { backStackEntry ->
                                 val imageName = backStackEntry.arguments?.getString("imageName")
                                 PlayerAudio(imageName = imageName, navController = navController)

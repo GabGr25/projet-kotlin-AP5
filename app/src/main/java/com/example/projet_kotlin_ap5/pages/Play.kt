@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.TitleText
 
 fun getImageResourceId(context: Context, nameImage: String): Int? {
@@ -23,7 +24,7 @@ fun getImageResourceId(context: Context, nameImage: String): Int? {
 }
 
 @Composable
-fun Play(modifier: androidx.compose.ui.Modifier.Companion) {
+fun Play(navController: NavController) {
     val context = LocalContext.current
     // Obtenir l'identifiant de l'image dynamiquement à partir du nom
     val imageId = com.example.projet_kotlin_ap5.components.getImageResourceId(context, "img1")
@@ -40,7 +41,7 @@ fun Play(modifier: androidx.compose.ui.Modifier.Companion) {
                     .size(140.dp)
                     .clip(RoundedCornerShape(5.dp))
                     .clickable {
-                        Log.d("dev", "BOUTTON CLICK")
+                        Log.d("dev", "Playing")
                         playKaaris(context)
                     },
                 contentScale = ContentScale.Crop // Ajustement de l'image
