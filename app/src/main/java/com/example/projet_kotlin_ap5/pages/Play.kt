@@ -37,6 +37,8 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
     // State pour stocker l'album et le MediaPlayer
     var album by remember { mutableStateOf<List<SongEntity>>(emptyList()) }
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+    val audioPlayerService = AudioPlayerService(songViewModel = songViewModel)
+
 
     // Charger les chansons de l'album de manière asynchrone
     LaunchedEffect(Unit) {
@@ -44,7 +46,7 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
         album = loadedAlbum
 
         if (album.isNotEmpty()) {
-            mediaPlayer = AudioPlayerService.loadSong(album[0])
+            mediaPlayer = audioPlayerService.loadSong(album[0])
         }
     }
 
@@ -53,9 +55,9 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
         Log.d("dev", "Aucune chanson trouvée dans l'album")
     } else {
         Log.d("dev", "Chansons trouvées dans l'album :")
-        album.forEach { song ->
-            Log.d("dev", song.toString())
-        }
+//        album.forEach { song ->
+//            Log.d("dev", song.toString())
+//        }
 
         // Affichage de l'interface utilisateur une fois l'album chargé
         Column(
@@ -74,7 +76,7 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
                         .clickable {
                             Log.d("dev", "Playing")
                             if (mediaPlayer != null) {
-                                AudioPlayerService.togglePlay(mediaPlayer!!)
+                                audioPlayerService.togglePlay(mediaPlayer!!)
                             }
                         },
                     contentScale = ContentScale.Crop
@@ -91,7 +93,7 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
                         .clip(RoundedCornerShape(5.dp))
                         .clickable {
                             Log.d("dev", "Pausing")
-                            mediaPlayer?.let { AudioPlayerService.togglePlay(it) }
+                            mediaPlayer?.let { audioPlayerService.togglePlay(it) }
                         },
                     contentScale = ContentScale.Crop
                 )
@@ -106,7 +108,7 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
                         .size(50.dp)
                         .clip(RoundedCornerShape(5.dp))
                         .clickable {
-                            AudioPlayerService.next()
+                            //audioPlayerService.next()
                         },
                     contentScale = ContentScale.Crop
                 )
@@ -121,7 +123,7 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
                         .size(50.dp)
                         .clip(RoundedCornerShape(5.dp))
                         .clickable {
-                            AudioPlayerService.previous()
+                            //audioPlayerService.previous()
                         },
                     contentScale = ContentScale.Crop
                 )

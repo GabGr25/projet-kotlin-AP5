@@ -3,6 +3,7 @@ package com.example.projet_kotlin_ap5.pages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaPlayer
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
@@ -31,28 +32,30 @@ import com.example.projet_kotlin_ap5.components.CreateRoundButton
 import com.example.projet_kotlin_ap5.models.SongViewModel
 import com.example.projet_kotlin_ap5.pages.MusicPlayer.Paused
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
-import com.example.projet_kotlin_ap5.services.PlaylistService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PlayerAudio(imageName: String?, navController: NavController, songViewModel: SongViewModel) {
     val context = LocalContext.current
 
-    val playlistService = PlaylistService(songViewModel = songViewModel)
-    CoroutineScope(Dispatchers.IO).launch {
-        playlistService.loadAlbum("Autobahn")
+    val audioPlayerService = AudioPlayerService(songViewModel = songViewModel)
+    runBlocking {
+        withContext(Dispatchers.IO) {
+            audioPlayerService.loadAlbum("Nevermind")
+        }
     }
-    val currentSong = playlistService.getCurrentSong()
-    // Loading song
-
-    var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
-    if (currentSong != null) {
-        mediaPlayer = AudioPlayerService.loadSong(currentSong)
+    //var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+    var mediaPlayer: MediaPlayer? = audioPlayerService.currentSong?.let {
+        Log.d("dev", "Chargement de la chanson : ${it.title}")  // Vérifier le titre de la chanson
+        audioPlayerService.loadSong(
+            it
+        )
     }
-
 
     // Ajout d'une couleur de fond temporaire pour mieux visualiser la zone occupée
     Column(
@@ -75,15 +78,16 @@ fun PlayerAudio(imageName: String?, navController: NavController, songViewModel:
         }
 
         // Bloc avec l'image (prend une partie de l'espace disponible)
-        imageName?.let {
-            Image(
-                painter = painterResource(id = context.getImageResourceId(it)), // Vérifier l'ID de l'image
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(300.dp)
-            )
-        }
+//        imageName?.let {
+//            Image(
+//                painter = painterResource(id = context.getImageResourceId(it)), // Vérifier l'ID de l'image
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .size(300.dp)
+//            )
+//        }
+        // TODO: Remplacer l'image par une image de la chanson en cours avec la thumbnail
 
         // Bloc avec le bouton Pause
         Row(
@@ -92,11 +96,27 @@ fun PlayerAudio(imageName: String?, navController: NavController, songViewModel:
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
-            ClickableImage("precedent", 100.dp, callback = { PreviousMusic()} )
+            ClickableImage("precedent", 100.dp, callback = {
+                audioPlayerService.skipToPreviousSong()
+                audioPlayerService.loadSong(audioPlayerService.currentSong!!)
+                if (mediaPlayer != null) {
+                    audioPlayerService.play(mediaPlayer)
+                }
+            } )
             PausePlayButton(callback = {
-                 AudioPlayerService.togglePlay(mediaPlayer!!)
+                if (mediaPlayer != null) {
+                    audioPlayerService.togglePlay(mediaPlayer)
+                } else {
+                    Log.e("dev", "Aucune chanson chargée")
+                }
             })
-            ClickableImage("suivant", 100.dp, callback = { NextMusic()} )
+            ClickableImage("suivant", 100.dp, callback = {
+                audioPlayerService.skipToNextSong()
+                audioPlayerService.loadSong(audioPlayerService.currentSong!!)
+                if (mediaPlayer != null) {
+                    audioPlayerService.play(mediaPlayer)
+                }
+            } )
         }
         CreateParolesButton()
     }
@@ -118,7 +138,7 @@ fun PausePlayButton(callback: ()->Unit) {
     val isPaused = MusicPlayer.Paused
 
     ClickableImage(
-        nameImage = if (isPaused.value) "pause" else "play",
+        nameImage = if (isPaused.value) "play" else "pause",
         sizeImage = 100.dp,
         callback = {
             isPaused.value = !isPaused.value
