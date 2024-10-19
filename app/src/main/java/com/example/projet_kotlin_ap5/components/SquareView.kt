@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.pages.MusicPlayed
 
 @Composable
 fun SquareView(navcontroller: NavController, firstColumn: List<String>, secondColumn: List<String>){
@@ -24,7 +25,10 @@ fun SquareView(navcontroller: NavController, firstColumn: List<String>, secondCo
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             for ( name in firstColumn){
-                ClickableImage(name, 175.dp) { navcontroller.navigate("player_audio/$name") }
+                ClickableImage(name, 175.dp) {
+                    navcontroller.navigate("player_audio/$name")
+                    MusicPlayed.name.value = name
+                }
             }
         }
         Spacer(modifier = Modifier.width(20.dp))
@@ -32,7 +36,10 @@ fun SquareView(navcontroller: NavController, firstColumn: List<String>, secondCo
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             for ( name in secondColumn){
-                ClickableImage(name, 175.dp) { navcontroller.navigate("player_audio/$name") }
+                ClickableImage(name, 175.dp) {
+                    navcontroller.navigate("player_audio/$name")
+                    MusicPlayed.name.value = name
+                }
             }
         }
     }

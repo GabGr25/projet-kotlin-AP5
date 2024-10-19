@@ -4,26 +4,24 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.material3.Icon
+
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.projet_kotlin_ap5.R
 import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
-import com.example.projet_kotlin_ap5.pages.MusicPlayer.Paused
+import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 
 @Composable
 fun PlayerAudio(imageName: String?, navController: NavController) {
@@ -33,7 +31,7 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black),
+            .background(BackgroundColor),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -41,11 +39,11 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
-                .padding(top = 32.dp, start = 32.dp, end = 32.dp),
+                .height(75.dp)
+                .padding(top =37.dp, start = 20.dp, end = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            CreateRoundButton(context, navController)
+            CreateRoundButton(modifier = Modifier ) {navController.navigate("home")}
             CreateFavoriteButton()
         }
 
@@ -57,6 +55,7 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(300.dp)
+                    .clip(RoundedCornerShape(10.dp))
             )
         }
 
@@ -71,7 +70,7 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
             PausePlayButton()
             ClickableImage("suivant", 100.dp, callback = { NextMusic()} )
         }
-        CreateParolesButton()
+        CreateParolesButton(navController)
     }
 }
 
@@ -84,10 +83,12 @@ object MusicPlayer{
     var Paused : MutableState<Boolean> = mutableStateOf(true)
 }
 
+object MusicPlayed {
+    var name: MutableState<String> = mutableStateOf("")
+}
+
 @Composable
 fun PausePlayButton() {
-    val context = LocalContext.current
-
     val isPaused = MusicPlayer.Paused
 
     ClickableImage(

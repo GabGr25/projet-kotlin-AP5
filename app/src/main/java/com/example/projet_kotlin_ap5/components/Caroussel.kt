@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.pages.MusicPlayed
 
 @Composable
 fun Caroussel(navController: NavController, list: List<String>){
@@ -21,7 +22,10 @@ fun Caroussel(navController: NavController, list: List<String>){
     ) {
         for ( name in list){
             item {
-                ClickableImage(name, 140.dp) { navController.navigate("player_audio/$name") }
+                ClickableImage(name, 140.dp) {
+                    navController.navigate("player_audio/$name")
+                    MusicPlayed.name.value = name
+                }
             }
         }
     }

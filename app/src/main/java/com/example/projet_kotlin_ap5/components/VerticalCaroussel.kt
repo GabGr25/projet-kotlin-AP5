@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.pages.MusicPlayed
 
 @Composable
 fun VerticalCarousel(navcontroller: NavController, items: List<String>) {
@@ -24,7 +25,10 @@ fun VerticalCarousel(navcontroller: NavController, items: List<String>) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 for (item in pair) {
-                    ClickableImage(item, 175.dp) { navcontroller.navigate("player_audio/$item") }
+                    ClickableImage(item, 175.dp) {
+                        navcontroller.navigate("player_audio/$item")
+                        MusicPlayed.name.value = item
+                    }
                 }
 
                 if (pair.size == 1) {

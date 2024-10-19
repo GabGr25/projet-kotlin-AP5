@@ -32,6 +32,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.example.projet_kotlin_ap5.models.SongViewModel
 import com.example.projet_kotlin_ap5.models.SongViewModelFactory
+import com.example.projet_kotlin_ap5.pages.Lyrics
 import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
 import kotlinx.coroutines.CoroutineScope
@@ -127,6 +128,10 @@ class MainActivity : ComponentActivity() {
 
                             composable("Artiste") {
                                 Artiste(navController = navController)
+                            }
+
+                            composable("Lyrics") {
+                                Lyrics(navController = navController)
                             }
 
                             composable("player_audio/{imageName}") { backStackEntry ->
