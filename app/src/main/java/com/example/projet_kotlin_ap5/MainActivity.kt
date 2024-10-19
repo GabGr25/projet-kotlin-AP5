@@ -139,7 +139,7 @@ class MainActivity : ComponentActivity() {
 
                             composable("player_audio/{imageName}") { backStackEntry ->
                                 val imageName = backStackEntry.arguments?.getString("imageName")
-                                PlayerAudio(imageName = imageName, navController = navController)
+                                PlayerAudio(imageName = imageName, navController = navController, songViewModel)
                             }
                             }
                         }

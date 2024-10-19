@@ -1,6 +1,8 @@
 package com.example.projet_kotlin_ap5.pages
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
@@ -8,7 +10,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +28,31 @@ import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
+import com.example.projet_kotlin_ap5.models.SongViewModel
 import com.example.projet_kotlin_ap5.pages.MusicPlayer.Paused
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
+import com.example.projet_kotlin_ap5.services.PlaylistService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PlayerAudio(imageName: String?, navController: NavController) {
+fun PlayerAudio(imageName: String?, navController: NavController, songViewModel: SongViewModel) {
     val context = LocalContext.current
+
+    val playlistService = PlaylistService(songViewModel = songViewModel)
+    CoroutineScope(Dispatchers.IO).launch {
+        playlistService.loadAlbum("Autobahn")
+    }
+    val currentSong = playlistService.getCurrentSong()
+    // Loading song
+
+    var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+    if (currentSong != null) {
+        mediaPlayer = AudioPlayerService.loadSong(currentSong)
+    }
+
 
     // Ajout d'une couleur de fond temporaire pour mieux visualiser la zone occupée
     Column(
@@ -68,7 +93,9 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
             horizontalArrangement = Arrangement.Center,
         ) {
             ClickableImage("precedent", 100.dp, callback = { PreviousMusic()} )
-            PausePlayButton()
+            PausePlayButton(callback = {
+                 AudioPlayerService.togglePlay(mediaPlayer!!)
+            })
             ClickableImage("suivant", 100.dp, callback = { NextMusic()} )
         }
         CreateParolesButton()
@@ -85,7 +112,7 @@ object MusicPlayer{
 }
 
 @Composable
-fun PausePlayButton() {
+fun PausePlayButton(callback: ()->Unit) {
     val context = LocalContext.current
 
     val isPaused = MusicPlayer.Paused
@@ -95,6 +122,7 @@ fun PausePlayButton() {
         sizeImage = 100.dp,
         callback = {
             isPaused.value = !isPaused.value
+            callback()
         }
     )
 }

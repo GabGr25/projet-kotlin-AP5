@@ -52,10 +52,10 @@ fun Play(navController: NavController, songViewModel: SongViewModel) {
     if (album.isEmpty()) {
         Log.d("dev", "Aucune chanson trouvée dans l'album")
     } else {
-//        Log.d("dev", "Chansons trouvées dans l'album :")
-//        album.forEach { song ->
-//            Log.d("dev", song.toString())
-//        }
+        Log.d("dev", "Chansons trouvées dans l'album :")
+        album.forEach { song ->
+            Log.d("dev", song.toString())
+        }
 
         // Affichage de l'interface utilisateur une fois l'album chargé
         Column(

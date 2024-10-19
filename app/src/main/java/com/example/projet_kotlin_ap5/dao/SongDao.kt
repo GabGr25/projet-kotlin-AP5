@@ -22,6 +22,9 @@ interface SongDao {
     @Query("SELECT * FROM song")
     suspend fun getAllSongs(): List<SongEntity>
 
+    @Query("SELECT * FROM song WHERE song.id = :id")
+    suspend fun getSongById(id: Long): SongEntity
+
     @Query("DELETE FROM song")
     suspend fun deleteAll()
 
