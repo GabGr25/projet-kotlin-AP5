@@ -38,10 +38,11 @@ fun Lyrics(navController: NavController, modifier: Modifier = Modifier){
             CreateRoundButton(
                 modifier = Modifier.
                     padding(top = 24.dp, start = 20.dp)
-            ) { navController.navigate("player_audio/${MusicPlayed.name.value}") }
+            ) { navController.navigate("player_audio/${MusicPlayed.name.value/*audioPlayerService.currentSong.id*/}") }
             TitleText("Lyrics :", 0.28f)
         }
         Text(
+            //text = audioPlayerService.currentSong.lyrics,
             text = LyricsCached.lyricsContent.value,
             fontSize = 16.sp,
             color = Color.White,

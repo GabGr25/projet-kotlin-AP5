@@ -96,4 +96,20 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
             _hasSongs.postValue(count > 0)
         }
     }
+
+    fun updateSong(updatedSongEntity: SongEntity){
+        viewModelScope.launch {
+            try {
+                val rowsUpdated = database.songDao().updateOne(updatedSongEntity)
+                if (rowsUpdated > 0) {
+                    Log.d("dbMusic", "Mise à jour réussie")
+                    Log.d("dbMusic", "Nombre de ligne modifié: $rowsUpdated")
+                } else {
+                    Log.d("dbMusic", "Aucune ligne n'a été mise à jour")
+                }
+            }  catch (e: Exception) {
+                Log.e("dbMusic", "Erreur lors de la mise à jour: ${e.message}")
+            }
+        }
+    }
 }

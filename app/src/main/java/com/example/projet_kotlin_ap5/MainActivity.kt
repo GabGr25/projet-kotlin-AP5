@@ -30,6 +30,7 @@ import android.Manifest
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
+import com.example.projet_kotlin_ap5.entities.SongEntity
 import com.example.projet_kotlin_ap5.models.SongViewModel
 import com.example.projet_kotlin_ap5.models.SongViewModelFactory
 import com.example.projet_kotlin_ap5.pages.Lyrics
@@ -149,13 +150,15 @@ class MainActivity : ComponentActivity() {
         private fun loadMusicFiles() {
             Toaster.toastSomething(this, "Scan des fichiers en cours...")
             CoroutineScope(Dispatchers.IO).launch {
-                val musicList = musicScanner.loadMusicFiles()
+                //val musicList = musicScanner.loadMusicFiles()
 
                 val database = MusicDatabase.getDatabase(this@MainActivity)
                 Log.d("dev", "Suppression de la DB")
                 database.songDao().deleteAll()
                 Log.d("dev", "Seed de la DB")
-                database.songDao().insertAll(musicList)
+                //database.songDao().insertAll(musicList)
+                val song = SongEntity(id=1000019705, title="LIF", album="Autobahn", artist="SCH", duration=195657, fileName="02-sch-lif.mp3", pathName="Autobahn/", lyrics="No lyrics")
+                database.songDao().insertOne(song)
             }
         }
     }
