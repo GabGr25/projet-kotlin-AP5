@@ -60,9 +60,9 @@ class MusicScanner(private val context: Context) {
                 val title = it.getString(titleColumn)
                 val artist = it.getString(artistColumn)
                 // TODO: Fix thumbnail loading
-                // val thumbnail = loadThumbnail(contentResolver, id)
+                val thumbnail = loadThumbnail(contentResolver, id)
 
-                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName, /*thumbnail = thumbnail*/))
+                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName, thumbnail = thumbnail))
             }
         }
         musicList

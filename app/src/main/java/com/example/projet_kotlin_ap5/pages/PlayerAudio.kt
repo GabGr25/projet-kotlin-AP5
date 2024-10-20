@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -55,9 +56,18 @@ fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerSer
         }
 
         // Image et détails de la chanson courante
-        imageName?.let {
+//        imageName?.let {
+//            Image(
+//                painter = painterResource(id = LocalContext.current.getImageResourceId(it)),
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier.size(300.dp)
+//            )
+//        }
+        // TODO: Utiliser l'image de l'album via thumbnail
+        currentSong.value?.thumbnail?.let {
             Image(
-                painter = painterResource(id = LocalContext.current.getImageResourceId(it)),
+                bitmap = it.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(300.dp)
