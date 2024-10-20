@@ -8,11 +8,8 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
 import androidx.annotation.RequiresApi
-import com.example.projet_kotlin_ap5.MusicDatabase
 import com.example.projet_kotlin_ap5.entities.SongEntity
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MusicScanner(private val context: Context) {
@@ -62,9 +59,10 @@ class MusicScanner(private val context: Context) {
                 val album = it.getString(albumColumn)
                 val title = it.getString(titleColumn)
                 val artist = it.getString(artistColumn)
-                val thumbnail = loadThumbnail(contentResolver, id)
+                // TODO: Fix thumbnail loading
+                // val thumbnail = loadThumbnail(contentResolver, id)
 
-                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName, thumbnail = thumbnail))
+                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName, /*thumbnail = thumbnail*/))
             }
         }
         musicList

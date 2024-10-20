@@ -1,6 +1,5 @@
 package com.example.projet_kotlin_ap5.entities
 
-import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -14,5 +13,5 @@ data class SongEntity(
     val fileName: String,
     val pathName: String,
     val lyrics: String = "No lyrics",
-    val thumbnail: Bitmap? = null
+//    val thumbnail: Bitmap? = null
 )

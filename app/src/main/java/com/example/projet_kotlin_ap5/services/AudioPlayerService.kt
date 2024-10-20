@@ -22,56 +22,74 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     }
 
     fun skipToNextSong() {
+        stop()
         if (currentPlaylist != null && currentSong != null) {
             val currentIndex = currentPlaylist!!.indexOf(currentSong)
+
             if (currentIndex < currentPlaylist!!.size - 1) {
                 currentSong = currentPlaylist!![currentIndex + 1]
+            } else {
+                // If we are at the end of the playlist, go to the first song
+                currentSong = currentPlaylist!![0]
             }
+
+            loadSong(currentSong!!)
+            play()
         }
     }
 
     fun skipToPreviousSong() {
+        stop()
         if (currentPlaylist != null && currentSong != null) {
             val currentIndex = currentPlaylist!!.indexOf(currentSong)
             if (currentIndex > 0) {
                 currentSong = currentPlaylist!![currentIndex - 1]
+            } else {
+                // If we are at the beginning of the playlist, go to the last song
+                currentSong = currentPlaylist!![currentPlaylist!!.size - 1]
             }
+
+            loadSong(currentSong!!)
+            play()
         }
     }
 
 
         // Media player section
-        fun loadSong(songEntity: SongEntity): MediaPlayer {
+        fun loadSong(songEntity: SongEntity) {
+            mediaPlayer.reset()
             try {
-                Log.d("dev", "Chargement de la chanson : ${songEntity.title}")
                 val filePath = File(musicDir, songEntity.pathName+"/"+songEntity.fileName).absolutePath
-                Log.d("dev", "Chemin du fichier : $filePath")
                 mediaPlayer.setDataSource(filePath)
                 mediaPlayer.prepare()
-                return mediaPlayer
             } catch (e: Exception) {
                 Log.e("dev", "Erreur lors du chargement de la chanson", e)
-                return mediaPlayer
             }
         }
 
-        fun togglePlay(mediaPlayer: MediaPlayer) {
+        fun togglePlay() {
             if (mediaPlayer.isPlaying) {
-                pause(mediaPlayer)
+                pause()
             } else {
-                play(mediaPlayer)
+                play()
             }
         }
 
-        fun play(mediaPlayer: MediaPlayer) {
+        private fun play() {
             if (!mediaPlayer.isPlaying) {
                 mediaPlayer.start()
             }
         }
 
-        fun pause(mediaPlayer: MediaPlayer) {
+        private fun pause() {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.pause()
+            }
+        }
+
+        private fun stop() {
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.stop()
             }
         }
 
