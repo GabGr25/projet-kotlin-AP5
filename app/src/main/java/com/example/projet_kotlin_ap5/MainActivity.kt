@@ -27,18 +27,23 @@ import com.example.projet_kotlin_ap5.pages.PlayerAudio
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 import com.example.projet_kotlin_ap5.ui.theme.ProjetkotlinAP5Theme
 import android.Manifest
+import android.os.Build
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.example.projet_kotlin_ap5.entities.SongEntity
 import com.example.projet_kotlin_ap5.models.SongViewModel
 import com.example.projet_kotlin_ap5.models.SongViewModelFactory
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.pages.Lyrics
 import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -46,6 +51,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var musicScanner: MusicScanner
 
     // Gérer le résultat de la demande de permission
+    @RequiresApi(Build.VERSION_CODES.Q)
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -59,6 +65,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -88,6 +95,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // Initialisation du service de lecture audio
+        val audioPlayerService = AudioPlayerService(songViewModel)
+        // TODO: Remove this devLoad call just for testing purposes
+        // devLoad(audioPlayerService)
+
         setContent {
             ProjetkotlinAP5Theme {
                 val navController = rememberNavController()
@@ -115,7 +127,7 @@ class MainActivity : ComponentActivity() {
                         // NavHost for managing navigation between different screens
                         NavHost(
                             navController = navController,
-                            startDestination = "Home",  // Starting screen
+                            startDestination = "Album",  // Starting screen
                             modifier = Modifier.fillMaxSize()
                         ) {
                             // Define your composable screens here
@@ -124,11 +136,16 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable("Album") {
-                                Album(navController = navController)
+                                Album(navController = navController, songViewModel, audioPlayerService)
                             }
 
                             composable("Artiste") {
                                 Artiste(navController = navController)
+                            }
+
+                            // For the DEV screen only
+                            composable("DEV") {
+                                //Play(navController = navController, songViewModel)
                             }
 
                             composable("Lyrics") {
@@ -137,7 +154,7 @@ class MainActivity : ComponentActivity() {
 
                             composable("player_audio/{imageName}") { backStackEntry ->
                                 val imageName = backStackEntry.arguments?.getString("imageName")
-                                PlayerAudio(imageName = imageName, navController = navController)
+                                PlayerAudio(imageName = imageName, navController = navController, audioPlayerService)
                             }
                             }
                         }
@@ -147,11 +164,21 @@ class MainActivity : ComponentActivity() {
         }
 
         // Used to refresh all the database by scanning the phone storage
+        @RequiresApi(Build.VERSION_CODES.Q)
         private fun loadMusicFiles() {
             Toaster.toastSomething(this, "Scan des fichiers en cours...")
-            CoroutineScope(Dispatchers.IO).launch {
-                //val musicList = musicScanner.loadMusicFiles()
 
+            runBlocking {
+                withContext(Dispatchers.IO) {
+                    val musicList = musicScanner.loadMusicFiles()
+
+                    // TODO: Optimiser le seed de la base de données pour la production
+                    val database = MusicDatabase.getDatabase(this@MainActivity)
+                    Log.d("dev", "Suppression de la DB")
+                    database.songDao().deleteAll()
+                    Log.d("dev", "Seed de la DB")
+                    database.songDao().insertAll(musicList)
+                }
                 val database = MusicDatabase.getDatabase(this@MainActivity)
                 Log.d("dev", "Suppression de la DB")
                 database.songDao().deleteAll()

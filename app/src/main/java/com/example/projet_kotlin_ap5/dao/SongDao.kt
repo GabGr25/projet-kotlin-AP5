@@ -26,6 +26,9 @@ interface SongDao {
     @Query("SELECT * FROM song")
     suspend fun getAllSongs(): List<SongEntity>
 
+    @Query("SELECT * FROM song WHERE song.id = :id")
+    suspend fun getSongById(id: Long): SongEntity
+
     @Query("DELETE FROM song")
     suspend fun deleteAll()
 
@@ -46,6 +49,10 @@ interface SongDao {
     // Getting All Albums by artist
     @Query("SELECT album FROM song WHERE song.artist LIKE :requiredArtist GROUP BY album")
     suspend fun getAlbumsFromArtist(requiredArtist: String): List<String>
+
+    // Getting All Albums
+    @Query("SELECT album FROM song GROUP BY album")
+    suspend fun getAlbums(): List<String>
 
 
     // Getting All Artists

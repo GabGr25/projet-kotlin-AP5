@@ -1,33 +1,46 @@
 package com.example.projet_kotlin_ap5.pages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
+import com.example.projet_kotlin_ap5.pages.MusicPlayer.Paused
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
 
+
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PlayerAudio(imageName: String?, navController: NavController) {
+fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerService: AudioPlayerService) {
     val context = LocalContext.current
 
-    // Ajout d'une couleur de fond temporaire pour mieux visualiser la zone occupée
+    val currentSong = audioPlayerService.currentSongFlow.collectAsState(initial = null) // Observer le flux de chansons
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,7 +48,6 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Premier bloc contenant les boutons en haut
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,10 +59,19 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
             CreateFavoriteButton()
         }
 
-        // Bloc avec l'image (prend une partie de l'espace disponible)
-        imageName?.let {
+        // Image et détails de la chanson courante
+//        imageName?.let {
+//            Image(
+//                painter = painterResource(id = LocalContext.current.getImageResourceId(it)),
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier.size(300.dp)
+//            )
+//        }
+        // TODO: Utiliser l'image de l'album via thumbnail
+        currentSong.value?.thumbnail?.let {
             Image(
-                painter = painterResource(id = context.getImageResourceId(it)), // Vérifier l'ID de l'image
+                bitmap = it.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -59,16 +80,36 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
             )
         }
 
-        // Bloc avec le bouton Pause
+        Text("${currentSong.value?.title}", color = Color.White, fontSize = 24.sp)
+        Text("${currentSong.value?.album}", color = Color.LightGray, fontSize = 18.sp)
+        Text("${currentSong.value?.artist}", color = Color.DarkGray, fontSize = 18.sp)
+
+        // Contrôles de lecture
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Center
         ) {
-            ClickableImage("precedent", 100.dp, callback = { PreviousMusic()} )
-            PausePlayButton()
-            ClickableImage("suivant", 100.dp, callback = { NextMusic()} )
+            ClickableImage("precedent", 100.dp) {
+                audioPlayerService.skipToPreviousSong()
+            }
+
+            if (Paused.value) {
+                ClickableImage("pause", 100.dp) {
+                    Paused.value = !Paused.value
+                    audioPlayerService.togglePlay()
+                }
+            } else {
+                ClickableImage("play", 100.dp) {
+                    Paused.value = !Paused.value
+                    audioPlayerService.togglePlay()
+                }
+            }
+
+            ClickableImage("suivant", 100.dp) {
+                audioPlayerService.skipToNextSong()
+            }
         }
         CreateParolesButton(navController)
     }
@@ -80,30 +121,14 @@ fun Context.getImageResourceId(imageName: String): Int {
 }
 
 object MusicPlayer{
-    var Paused : MutableState<Boolean> = mutableStateOf(true)
+    var Paused : MutableState<Boolean> = mutableStateOf(false)
 }
 
-object MusicPlayed {
-    var name: MutableState<String> = mutableStateOf("")
+fun previousMusic(audioPlayerService: AudioPlayerService){
+    Paused.value = true
+    audioPlayerService.skipToPreviousSong()
 }
-
-@Composable
-fun PausePlayButton() {
-    val isPaused = MusicPlayer.Paused
-
-    ClickableImage(
-        nameImage = if (isPaused.value) "pause" else "play",
-        sizeImage = 100.dp,
-        callback = {
-            isPaused.value = !isPaused.value
-        }
-    )
-}
-
-fun PreviousMusic(){
-    //Fonction pour passer à la musique précédente
-}
-
-fun NextMusic(){
-    //Fonction pour passer à la musique suivante
+fun nextMusic(audioPlayerService: AudioPlayerService){
+    Paused.value = true
+    audioPlayerService.skipToNextSong()
 }
