@@ -50,25 +50,25 @@ fun Navbar(
             .padding(bottom = 25.dp)
             .padding(top = 10.dp)
     ) {
-        NavbarButton("Home", isSelected = (selected == 1), modifier = Modifier.weight(1f)) {
-            NavbarState.stateNavbar.value = 1
-            navController.navigate("Home")  // Navigation vers ScreenA
-        }
-//        VerticalDivider(Modifier.height(20.dp))
-//        NavbarButton("Album", isSelected = (selected == 2), modifier = Modifier.weight(1f)) {
-//            NavbarState.stateNavbar.value = 2
-//            navController.navigate("Album")  // Navigation vers ScreenB
+//        NavbarButton("Home", isSelected = (selected == 1), modifier = Modifier.weight(1f)) {
+//            NavbarState.stateNavbar.value = 1
+//            navController.navigate("Home")  // Navigation vers ScreenA
 //        }
+//        VerticalDivider(Modifier.height(20.dp))
+        NavbarButton("Album", isSelected = (selected == 2), modifier = Modifier.weight(1f)) {
+            NavbarState.stateNavbar.value = 2
+            navController.navigate("Album")  // Navigation vers ScreenB
+        }
 //        VerticalDivider(Modifier.height(20.dp))
 //        NavbarButton("Artiste", isSelected = (selected == 3), modifier = Modifier.weight(1f)) {
 //            NavbarState.stateNavbar.value = 3
 //            navController.navigate("Artiste")
 //        }
-        VerticalDivider(Modifier.height(20.dp))
-        NavbarButton("DEV", isSelected = (selected == 4), modifier = Modifier.weight(1f)) {
-            NavbarState.stateNavbar.value = 3
-            navController.navigate("DEV")
-        }
+//        VerticalDivider(Modifier.height(20.dp))
+//        NavbarButton("DEV", isSelected = (selected == 4), modifier = Modifier.weight(1f)) {
+//            NavbarState.stateNavbar.value = 3
+//            navController.navigate("DEV")
+//        }
     }
 }
 

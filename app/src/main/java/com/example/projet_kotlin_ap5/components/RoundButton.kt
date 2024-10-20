@@ -32,7 +32,7 @@ fun CreateRoundButton(context: Context = LocalContext.current, navController: Na
         IconButton(
             onClick = {
                 // Navigation directe vers l'écran Home
-                navController.navigate("home")
+                navController.navigate("album")
             },
             modifier = Modifier.align(Alignment.Center)
         ) {
