@@ -5,9 +5,13 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
@@ -29,7 +34,8 @@ import com.example.projet_kotlin_ap5.services.AudioPlayerService
 fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerService: AudioPlayerService) {
     val context = LocalContext.current
 
-    // Ajout d'une couleur de fond temporaire pour mieux visualiser la zone occupée
+    val currentSong = audioPlayerService.currentSongFlow.collectAsState(initial = null) // Observer le flux de chansons
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,7 +43,6 @@ fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerSer
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Premier bloc contenant les boutons en haut
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -49,48 +54,52 @@ fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerSer
             CreateFavoriteButton()
         }
 
-        // Bloc avec l'image (prend une partie de l'espace disponible)
-        // TODO: Remplacer l'image par une image de la chanson en cours avec la thumbnail
+        // Image et détails de la chanson courante
         imageName?.let {
             Image(
-                painter = painterResource(id = context.getImageResourceId(it)), // Vérifier l'ID de l'image
+                painter = painterResource(id = LocalContext.current.getImageResourceId(it)),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(300.dp)
+                modifier = Modifier.size(300.dp)
             )
         }
 
-        // Bloc avec le bouton Pause
+        Text("${currentSong.value?.title}", color = Color.White, fontSize = 24.sp)
+        Text("${currentSong.value?.album}", color = Color.LightGray, fontSize = 18.sp)
+        Text("${currentSong.value?.artist}", color = Color.DarkGray, fontSize = 18.sp)
+
+        // Contrôles de lecture
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Center
         ) {
-            ClickableImage("precedent", 100.dp, callback = {
-                previousMusic(audioPlayerService)
-            } )
-
-            if (Paused.value) {
-                ClickableImage("pause", 100.dp, callback = {
-                    Paused.value = !Paused.value
-                    audioPlayerService.togglePlay()
-                } )
-            } else {
-                ClickableImage("play", 100.dp, callback = {
-                    Paused.value = !Paused.value
-                    audioPlayerService.togglePlay()
-                } )
+            ClickableImage("precedent", 100.dp) {
+                audioPlayerService.skipToPreviousSong()
             }
 
-            ClickableImage("suivant", 100.dp, callback = {
-                nextMusic(audioPlayerService)
-            } )
+            if (Paused.value) {
+                ClickableImage("pause", 100.dp) {
+                    Paused.value = !Paused.value
+                    audioPlayerService.togglePlay()
+                }
+            } else {
+                ClickableImage("play", 100.dp) {
+                    Paused.value = !Paused.value
+                    audioPlayerService.togglePlay()
+                }
+            }
+
+            ClickableImage("suivant", 100.dp) {
+                audioPlayerService.skipToNextSong()
+            }
         }
+
         CreateParolesButton()
     }
 }
+
 
 
 

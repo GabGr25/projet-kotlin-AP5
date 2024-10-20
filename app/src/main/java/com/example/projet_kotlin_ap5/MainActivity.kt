@@ -171,22 +171,4 @@ class MainActivity : ComponentActivity() {
                 database.songDao().insertAll(musicList)
             }
         }
-
-        /**
-         * Méthode de test pour charger une chanson de l'album "Nevermind"
-         */
-        private fun devLoad(audioPlayerService: AudioPlayerService) {
-            // Charger les chansons de l'album de manière asynchrone
-            runBlocking {
-                withContext(Dispatchers.IO) {
-                    audioPlayerService.loadAlbum("Nevermind")
-                    audioPlayerService.currentSong?.let {
-                        Log.d("dev", "Chargement de la chanson : ${it.title}")  // Vérifier le titre de la chanson
-                        audioPlayerService.loadSong(
-                            it
-                        )
-                    }
-                }
-            }
-        }
     }
