@@ -39,9 +39,7 @@ import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.pages.Lyrics
 import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -154,7 +152,7 @@ class MainActivity : ComponentActivity() {
 
                             composable("player_audio/{imageName}") { backStackEntry ->
                                 val imageName = backStackEntry.arguments?.getString("imageName")
-                                PlayerAudio(imageName = imageName, navController = navController, audioPlayerService)
+                                PlayerAudio(navController = navController, audioPlayerService)
                             }
                             }
                         }

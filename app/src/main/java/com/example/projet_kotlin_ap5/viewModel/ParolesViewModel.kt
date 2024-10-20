@@ -1,7 +1,5 @@
 package com.example.projet_kotlin_ap5.viewModel
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projet_kotlin_ap5.api.ApiClient
