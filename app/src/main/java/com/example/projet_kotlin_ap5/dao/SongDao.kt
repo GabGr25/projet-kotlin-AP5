@@ -46,6 +46,10 @@ interface SongDao {
     @Query("SELECT album FROM song WHERE song.artist LIKE :requiredArtist GROUP BY album")
     suspend fun getAlbumsFromArtist(requiredArtist: String): List<String>
 
+    // Getting All Albums
+    @Query("SELECT album FROM song GROUP BY album")
+    suspend fun getAlbums(): List<String>
+
 
     // Getting All Artists
     @Query("SELECT artist FROM song GROUP BY artist")

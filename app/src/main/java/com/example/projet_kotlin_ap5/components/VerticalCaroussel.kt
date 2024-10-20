@@ -7,9 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
 
 @Composable
-fun VerticalCarousel(navcontroller: NavController, items: List<String>) {
+fun VerticalCarousel(navcontroller: NavController, items: List<String>, clickableImageCallback : (String) -> Unit) {
 
     val pairedItems = items.chunked(2)
 
@@ -24,7 +25,7 @@ fun VerticalCarousel(navcontroller: NavController, items: List<String>) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 for (item in pair) {
-                    ClickableImage(item, 175.dp) { navcontroller.navigate("player_audio/$item") }
+                    ClickableImage(item, 175.dp) { handleAlbumClick(navcontroller, item, clickableImageCallback) }
                 }
 
                 if (pair.size == 1) {
@@ -33,4 +34,9 @@ fun VerticalCarousel(navcontroller: NavController, items: List<String>) {
             }
         }
     }
+}
+
+fun handleAlbumClick(navController: NavController, album: String, clickableImageCallback: (String) -> Unit) {
+    clickableImageCallback(album)
+    navController.navigate("player_audio/$album")
 }

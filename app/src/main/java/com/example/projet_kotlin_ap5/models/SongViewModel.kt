@@ -74,6 +74,9 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
     suspend fun getSongsByAlbum(album: String): List<SongEntity> {
         return database.songDao().getSongsFromAlbum(album)
     }
+    suspend fun getAlbums(): List<String> {
+        return database.songDao().getAlbums()
+    }
 
     suspend fun getSongById(id: Long): SongEntity {
         return database.songDao().getSongById(id)

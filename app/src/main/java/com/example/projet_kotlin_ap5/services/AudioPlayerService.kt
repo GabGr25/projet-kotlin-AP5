@@ -18,6 +18,7 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
         val loadedAlbum = songViewModel.getSongsByAlbum(album)
         currentPlaylist = loadedAlbum
         currentSong = loadedAlbum[0]
+        loadSong(currentSong!!)
         Log.d("dev", "Album loaded : $album avec ${loadedAlbum.size} chansons. Chanson en cours : ${currentSong!!.title}")
     }
 

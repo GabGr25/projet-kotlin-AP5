@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
         // Initialisation du service de lecture audio
         val audioPlayerService = AudioPlayerService(songViewModel)
         // TODO: Remove this devLoad call just for testing purposes
-        devLoad(audioPlayerService)
+        // devLoad(audioPlayerService)
 
         setContent {
             ProjetkotlinAP5Theme {
@@ -134,7 +134,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable("Album") {
-                                Album(navController = navController)
+                                Album(navController = navController, songViewModel, audioPlayerService)
                             }
 
                             composable("Artiste") {
