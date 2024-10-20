@@ -4,15 +4,19 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
 import androidx.annotation.RequiresApi
+import com.example.projet_kotlin_ap5.R
 import com.example.projet_kotlin_ap5.entities.SongEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class MusicScanner(private val context: Context) {
+
+    private val defaultThumbnail: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.zinzin)
 
     @RequiresApi(Build.VERSION_CODES.Q)
     suspend fun loadMusicFiles(): List<SongEntity> = withContext(Dispatchers.IO) {
@@ -59,18 +63,31 @@ class MusicScanner(private val context: Context) {
                 val album = it.getString(albumColumn)
                 val title = it.getString(titleColumn)
                 val artist = it.getString(artistColumn)
-                // TODO: Fix thumbnail loading
-                // val thumbnail = loadThumbnail(contentResolver, id)
+                val thumbnail = loadThumbnail(contentResolver, id)
 
-                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName, /*thumbnail = thumbnail*/))
+                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName, thumbnail = thumbnail))
             }
         }
         musicList
     }
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun loadThumbnail(contentResolver: ContentResolver, songId: Long): Bitmap? {
+    private fun loadThumbnail(contentResolver: ContentResolver, songId: Long): Bitmap {
         val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
         return contentResolver.loadThumbnail(uri, Size(640, 480), null)
     }
+
+    // TODO: Optimiser le stockage en BD des images par album
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun loadThumbnailOrDefault(contentResolver: ContentResolver, songId: Long): Bitmap {
+        return try {
+            // Tente de charger la miniature
+            val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
+            contentResolver.loadThumbnail(uri, Size(640, 480), null)
+        } catch (e: Exception) {
+            // Si une erreur survient, charge l'image par défaut
+            return defaultThumbnail
+        }
+    }
+
 
 }

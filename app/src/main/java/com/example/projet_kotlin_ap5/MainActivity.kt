@@ -161,14 +161,18 @@ class MainActivity : ComponentActivity() {
         @RequiresApi(Build.VERSION_CODES.Q)
         private fun loadMusicFiles() {
             Toaster.toastSomething(this, "Scan des fichiers en cours...")
-            CoroutineScope(Dispatchers.IO).launch {
-                val musicList = musicScanner.loadMusicFiles()
 
-                val database = MusicDatabase.getDatabase(this@MainActivity)
-                Log.d("dev", "Suppression de la DB")
-                database.songDao().deleteAll()
-                Log.d("dev", "Seed de la DB")
-                database.songDao().insertAll(musicList)
+            runBlocking {
+                withContext(Dispatchers.IO) {
+                    val musicList = musicScanner.loadMusicFiles()
+
+                    // TODO: Optimiser le seed de la base de données pour la production
+                    val database = MusicDatabase.getDatabase(this@MainActivity)
+                    Log.d("dev", "Suppression de la DB")
+                    database.songDao().deleteAll()
+                    Log.d("dev", "Seed de la DB")
+                    database.songDao().insertAll(musicList)
+                }
             }
         }
     }
