@@ -12,5 +12,6 @@ data class SongEntity(
     val duration: Int,
     val fileName: String,
     val pathName: String,
-    val lyrics: String = "No lyrics"
+    val lyrics: String = "No lyrics",
+//    val thumbnail: Bitmap? = null
 )

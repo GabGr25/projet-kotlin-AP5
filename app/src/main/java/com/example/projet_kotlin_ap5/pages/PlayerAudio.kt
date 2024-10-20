@@ -1,11 +1,10 @@
 package com.example.projet_kotlin_ap5.pages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -14,19 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.projet_kotlin_ap5.R
 import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
 import com.example.projet_kotlin_ap5.pages.MusicPlayer.Paused
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
 
+
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PlayerAudio(imageName: String?, navController: NavController) {
+fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerService: AudioPlayerService) {
     val context = LocalContext.current
 
     // Ajout d'une couleur de fond temporaire pour mieux visualiser la zone occupée
@@ -50,6 +50,7 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
         }
 
         // Bloc avec l'image (prend une partie de l'espace disponible)
+        // TODO: Remplacer l'image par une image de la chanson en cours avec la thumbnail
         imageName?.let {
             Image(
                 painter = painterResource(id = context.getImageResourceId(it)), // Vérifier l'ID de l'image
@@ -67,13 +68,31 @@ fun PlayerAudio(imageName: String?, navController: NavController) {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
-            ClickableImage("precedent", 100.dp, callback = { PreviousMusic()} )
-            PausePlayButton()
-            ClickableImage("suivant", 100.dp, callback = { NextMusic()} )
+            ClickableImage("precedent", 100.dp, callback = {
+                previousMusic(audioPlayerService)
+            } )
+
+            if (Paused.value) {
+                ClickableImage("pause", 100.dp, callback = {
+                    Paused.value = !Paused.value
+                    audioPlayerService.togglePlay()
+                } )
+            } else {
+                ClickableImage("play", 100.dp, callback = {
+                    Paused.value = !Paused.value
+                    audioPlayerService.togglePlay()
+                } )
+            }
+
+            ClickableImage("suivant", 100.dp, callback = {
+                nextMusic(audioPlayerService)
+            } )
         }
         CreateParolesButton()
     }
 }
+
+
 
 fun Context.getImageResourceId(imageName: String): Int {
     // Cette méthode retourne -1 si l'image n'est pas trouvée, vérifiez le nom d'image utilisé
@@ -81,28 +100,14 @@ fun Context.getImageResourceId(imageName: String): Int {
 }
 
 object MusicPlayer{
-    var Paused : MutableState<Boolean> = mutableStateOf(true)
+    var Paused : MutableState<Boolean> = mutableStateOf(false)
 }
 
-@Composable
-fun PausePlayButton() {
-    val context = LocalContext.current
-
-    val isPaused = MusicPlayer.Paused
-
-    ClickableImage(
-        nameImage = if (isPaused.value) "pause" else "play",
-        sizeImage = 100.dp,
-        callback = {
-            isPaused.value = !isPaused.value
-        }
-    )
+fun previousMusic(audioPlayerService: AudioPlayerService){
+    Paused.value = true
+    audioPlayerService.skipToPreviousSong()
 }
-
-fun PreviousMusic(){
-    //Fonction pour passer à la musique précédente
-}
-
-fun NextMusic(){
-    //Fonction pour passer à la musique suivante
+fun nextMusic(audioPlayerService: AudioPlayerService){
+    Paused.value = true
+    audioPlayerService.skipToNextSong()
 }
