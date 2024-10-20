@@ -20,15 +20,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.R
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
 import com.example.projet_kotlin_ap5.viewModel.ParolesViewModel
 
 @Composable
-fun CreateParolesButton(navController: NavController) {
+fun CreateParolesButton(navController: NavController, audioPlayerService: AudioPlayerService) {
     val parolesViewModel: ParolesViewModel = viewModel()
 
     Button(
-        onClick = { parolesViewModel.onParolesButtonClicked(navController) },
+        onClick = { parolesViewModel.onParolesButtonClicked(navController, audioPlayerService) },
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +48,7 @@ fun CreateParolesButton(navController: NavController) {
             Icon(
                 painter = painterResource(id = R.drawable.microphone),
                 contentDescription = "Microphone Icon",
-                tint = Color.Gray, // Couleur de l'icône
+                tint = Color.Gray,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(10.dp))

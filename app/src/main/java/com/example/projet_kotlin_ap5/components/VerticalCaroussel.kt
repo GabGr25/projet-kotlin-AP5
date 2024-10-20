@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.projet_kotlin_ap5.services.AudioPlayerService
-import com.example.projet_kotlin_ap5.pages.MusicPlayed
 
 @Composable
 fun VerticalCarousel(navcontroller: NavController, items: List<String>, clickableImageCallback : (String) -> Unit) {

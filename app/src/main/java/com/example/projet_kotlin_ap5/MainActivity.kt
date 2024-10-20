@@ -149,7 +149,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable("Lyrics") {
-                                Lyrics(navController = navController)
+                                Lyrics(navController = navController, audioPlayerService)
                             }
 
                             composable("player_audio/{imageName}") { backStackEntry ->

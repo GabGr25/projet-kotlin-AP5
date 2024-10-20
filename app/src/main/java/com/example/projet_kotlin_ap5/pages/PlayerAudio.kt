@@ -55,7 +55,7 @@ fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerSer
                 .padding(top =37.dp, start = 20.dp, end = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            CreateRoundButton(modifier = Modifier ) {navController.navigate("home")}
+            CreateRoundButton(modifier = Modifier ) {navController.navigate("album")}
             CreateFavoriteButton()
         }
 
@@ -111,7 +111,7 @@ fun PlayerAudio(imageName: String?, navController: NavController, audioPlayerSer
                 audioPlayerService.skipToNextSong()
             }
         }
-        CreateParolesButton(navController)
+        CreateParolesButton(navController, audioPlayerService)
     }
 }
 

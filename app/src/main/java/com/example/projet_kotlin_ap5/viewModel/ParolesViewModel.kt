@@ -6,59 +6,47 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projet_kotlin_ap5.api.ApiClient
 import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.models.SongViewModel
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import kotlinx.coroutines.launch
 
-object LyricsCached{
-    var lyricsContent : MutableState<String> = mutableStateOf("")
-}
+class ParolesViewModel(private val songViewModel: SongViewModel) : ViewModel() {
 
-class ParolesViewModel() : ViewModel() {
-
-    fun onParolesButtonClicked(navController: NavController) {
+    fun onParolesButtonClicked(navController: NavController, audioPlayerService: AudioPlayerService) {
         viewModelScope.launch {
-            /*val currentLyrics = audioPlayerService.currentSong?.lyrics
-            if(currentLyrics != null && currentLyrics == "No Lyrics"){
-                val artist = audioPlayerService.currentSong?.artiste
-                val titre = audioPlayerService.currentSong?.titre
-                val response = ApiClient.apiService.getLyrics(artist, titre)
-                if (response.isSuccessful) {
-                    val lyrics = response.body()?.lyrics
-                    if (lyrics != null) {
-                        updateSong(
-                            {
-                                audioPlayerService.currentSong.id,
-                                title,
-                                audioPlayerService.currentSong.album,
-                                artist,
-                                audioPlayerService.currentSong.duration,
-                                audioPlayerService.currentSong.fileName,
-                                audioPlayerService.currentSong.pathName,
-                                lyrics
-                            }
-                        )
-                        audioPlayerService.currentSong.lyrics = lyrics
-                    } else {
-                        println("No lyrics for this song")
-                    }
-            }
-            navController.navigate("Lyrics")
-            NOUVELLE FONCTION
-            -----------------------------------------------------------------------------------------------------------------
-            ANCIENNE FONCTION
-            */
-            val response = ApiClient.apiService.getLyrics("bob marley", "buffalo soldier")
+            val currentSong = audioPlayerService.currentSongFlow.value
 
-            if (response.isSuccessful) {
-                val lyrics = response.body()?.lyrics
-                if (lyrics != null) {
-                    LyricsCached.lyricsContent.value = lyrics
-                } else {
-                    LyricsCached.lyricsContent.value = "No lyrics for this song"
+            if (currentSong != null && (currentSong.lyrics == "No Lyrics")) {
+                val artist = currentSong.artist
+                val title = currentSong.title
+
+                try {
+                    val response = ApiClient.apiService.getLyrics(artist, title)
+
+                    if (response.isSuccessful) {
+                        val lyrics = response.body()?.lyrics
+
+                        if (lyrics != null) {
+                            val updatedSong = currentSong.copy(lyrics = lyrics)
+                            songViewModel.updateSong(updatedSong)
+
+                            audioPlayerService.loadSong(updatedSong)
+                        } else {
+                            println("No lyrics found for this song")
+                        }
+                    } else {
+                        println("Failed to fetch lyrics: ${response.code()}")
+                    }
+                } catch (e: Exception) {
+                    println("Error fetching lyrics: ${e.message}")
                 }
+
+                navController.navigate("Lyrics")
+            } else if (currentSong != null && currentSong.lyrics != "No Lyrics") {
+                navController.navigate("Lyrics")
             } else {
-                LyricsCached.lyricsContent.value = "Error during the Request"
+                println("No song is currently playing")
             }
-            navController.navigate("Lyrics")
         }
     }
 }
