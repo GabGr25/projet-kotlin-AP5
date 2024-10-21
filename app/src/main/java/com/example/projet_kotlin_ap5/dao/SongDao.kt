@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.projet_kotlin_ap5.entities.SongEntity
 
 @Dao
@@ -15,6 +16,9 @@ interface SongDao {
 
     @Insert
     suspend fun insertOne(songEntity: SongEntity)
+
+    @Update
+    suspend fun updateOne(songEntity: SongEntity): Int
 
     @Query("SELECT * FROM song")
     fun getAllSongsLiveData(): LiveData<List<SongEntity>>

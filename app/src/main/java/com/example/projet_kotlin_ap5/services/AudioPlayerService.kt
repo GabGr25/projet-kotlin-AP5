@@ -4,11 +4,13 @@ import android.media.MediaPlayer
 import android.os.Environment
 import android.util.Log
 import com.example.projet_kotlin_ap5.entities.SongEntity
-import com.example.projet_kotlin_ap5.models.SongViewModel
+import com.example.projet_kotlin_ap5.viewModel.SongViewModel
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
+import kotlinx.coroutines.joinAll
 
 class AudioPlayerService(private val songViewModel: SongViewModel) {
     val mediaPlayer = MediaPlayer()
@@ -17,14 +19,30 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     private val _currentSong = MutableStateFlow<SongEntity?>(null)
     val currentSongFlow: StateFlow<SongEntity?> = _currentSong.asStateFlow() // Exposer StateFlow en lecture seule
     var currentPlaylist: List<SongEntity>? = null
+    private val _isPlaying = MutableStateFlow(false) // Flux d'état pour savoir si la musique est en cours de lecture
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow() // Expose en lecture seule
 
     // Charger un album entier
     suspend fun loadAlbum(album: String) {
+        // Récupérer les chansons de l'album
         val loadedAlbum = songViewModel.getSongsByAlbum(album)
         currentPlaylist = loadedAlbum
-        _currentSong.value = loadedAlbum[0]
-        loadSong(_currentSong.value!!)
-        Log.d("dev", "Album loaded: $album with ${loadedAlbum.size} songs. Current song: ${_currentSong.value!!.title}")
+        if (loadedAlbum.isNotEmpty()) {
+            // Charger les lyrics pour chaque chanson de l'album
+            val lyricsUpdateJobs = loadedAlbum.map { song ->
+                songViewModel.updateLyricsForSong(song)  // Appeler la méthode pour chaque chanson
+            }
+
+            // Attendre que toutes les mises à jour de lyrics soient terminées
+            lyricsUpdateJobs.awaitAll() // Ceci va attendre que tous les jobs soient complétés
+
+            // Mettre à jour la chanson actuelle
+            _currentSong.value = loadedAlbum[0]
+            loadSong(_currentSong.value!!)
+            Log.d("dev", "Album loaded: $album with ${loadedAlbum.size} songs. Current song: ${_currentSong.value!!.title}")
+        } else {
+            Log.e("AudioPlayerService", "Aucun album trouvé.")
+        }
     }
 
     // Sauter à la chanson suivante
@@ -83,21 +101,30 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
         }
     }
 
+    fun playCurrentSong() {
+        if (!mediaPlayer.isPlaying) {
+            play()
+        }
+    }
+
     private fun play() {
         if (!mediaPlayer.isPlaying) {
             mediaPlayer.start()
+            _isPlaying.value = true // Mettre à jour l'état de lecture
         }
     }
 
     private fun pause() {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.pause()
+            _isPlaying.value = false // Mettre à jour l'état de lecture
         }
     }
 
     private fun stop() {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
+            _isPlaying.value = false // Mettre à jour l'état de lecture
         }
     }
 }
