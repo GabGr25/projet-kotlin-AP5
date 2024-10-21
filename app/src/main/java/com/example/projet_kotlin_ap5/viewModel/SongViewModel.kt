@@ -10,6 +10,9 @@ import com.example.projet_kotlin_ap5.MusicDatabase
 import com.example.projet_kotlin_ap5.api.ApiClient
 import com.example.projet_kotlin_ap5.entities.SongEntity
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class SongViewModel(private val database: MusicDatabase) : ViewModel() {
@@ -19,41 +22,32 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
 
     val allSongs: LiveData<List<SongEntity>> = database.songDao().getAllSongsLiveData()
 
-    fun updateLyrics(audioPlayerService: AudioPlayerService, navController: NavController) {
-        viewModelScope.launch {
-            val currentSong = audioPlayerService.currentSongFlow.value
+    fun updateLyricsForSong(song: SongEntity): Deferred<Unit> {
+        return viewModelScope.async {
+            val artist = song.artist
+            val title = song.title
+            try {
+                val response = ApiClient.apiService.getLyrics(artist, title)
+                Log.d("updateLyrics", "Resultat response: $response")
 
-            if (currentSong != null && (currentSong.lyrics == "No lyrics")) {
-                val artist = currentSong.artist
-                val title = currentSong.title
+                if (response.isSuccessful) {
+                    val lyrics = response.body()?.lyrics
 
-                try {
-                    val response = ApiClient.apiService.getLyrics(artist, title)
-                    Log.d("updateLyrics", "Resultat response: $response")
-
-                    if (response.isSuccessful) {
-                        val lyrics = response.body()?.lyrics
-
-                        if (lyrics != null) {
-                            val updatedSong = currentSong.copy(lyrics = lyrics)
-                            updateSong(updatedSong)
-
-                            audioPlayerService.loadSong(updatedSong)
-                        } else {
-                            println("No lyrics found for this song")
-                        }
+                    if (lyrics != null) {
+                        val updatedSong = song.copy(lyrics = lyrics)
+                        updateSong(updatedSong) // Mettre à jour la chanson dans la DB
+                        Log.d("updateLyrics", "Lyrics updated for song: ${song.title}")
                     } else {
-                        println("Failed to fetch lyrics: ${response.code()}")
+                        val noLyrics = "No lyrics for this song"
+                        val updatedSong = song.copy(lyrics = noLyrics)
+                        updateSong(updatedSong)
+                        Log.d("updateLyrics", "No lyrics found for song: ${song.title}")
                     }
-                } catch (e: Exception) {
-                    println("Error fetching lyrics: ${e.message}")
+                } else {
+                    Log.e("updateLyrics", "Failed to fetch lyrics: ${response.code()}")
                 }
-
-                navController.navigate("Lyrics")
-            } else if (currentSong != null && currentSong.lyrics != "No lyrics") {
-                navController.navigate("Lyrics")
-            } else {
-                println("No song is currently playing")
+            } catch (e: Exception) {
+                Log.e("updateLyrics", "Error fetching lyrics: ${e.message}")
             }
         }
     }

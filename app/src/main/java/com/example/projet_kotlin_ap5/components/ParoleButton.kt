@@ -29,7 +29,7 @@ import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 fun CreateParolesButton(navController: NavController, audioPlayerService: AudioPlayerService, songViewModel: SongViewModel) {
 
     Button(
-        onClick = { songViewModel.updateLyrics(audioPlayerService, navController) },
+        onClick = { navController.navigate("Lyrics") },
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         modifier = Modifier
             .padding(top = 16.dp, bottom = 16.dp)

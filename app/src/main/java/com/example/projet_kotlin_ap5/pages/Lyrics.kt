@@ -1,5 +1,6 @@
 package com.example.projet_kotlin_ap5.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -45,22 +46,12 @@ fun Lyrics(
         }
 
         if (currentSong?.lyrics != null && currentSong.lyrics != "No lyrics") {
+            Log.d("updateLyrics", "song: $currentSong")
             Text(
                 text = currentSong.lyrics,
                 fontSize = 16.sp,
                 color = Color.White,
                 fontWeight = FontWeight.W700,
-                fontFamily = lexendFontFamily,
-                modifier = modifier
-                    .padding(top = 24.dp, bottom = 24.dp)
-                    .padding(horizontal = 20.dp)
-            )
-        } else {
-            Text(
-                text = "No lyrics available for this song",
-                fontSize = 16.sp,
-                color = Color.Gray,
-                fontWeight = FontWeight.W400,
                 fontFamily = lexendFontFamily,
                 modifier = modifier
                     .padding(top = 24.dp, bottom = 24.dp)
