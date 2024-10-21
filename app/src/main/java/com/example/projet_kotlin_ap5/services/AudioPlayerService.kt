@@ -17,6 +17,8 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     private val _currentSong = MutableStateFlow<SongEntity?>(null)
     val currentSongFlow: StateFlow<SongEntity?> = _currentSong.asStateFlow() // Exposer StateFlow en lecture seule
     var currentPlaylist: List<SongEntity>? = null
+    private val _isPlaying = MutableStateFlow(false) // Flux d'état pour savoir si la musique est en cours de lecture
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow() // Expose en lecture seule
 
     // Charger un album entier
     suspend fun loadAlbum(album: String) {
@@ -30,7 +32,7 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
         } else {
             Log.e("AudioPlayerService", "Aucun album trouvé.")
         }
-            }
+    }
 
     // Sauter à la chanson suivante
     fun skipToNextSong() {
@@ -88,21 +90,30 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
         }
     }
 
+    fun playCurrentSong() {
+        if (!mediaPlayer.isPlaying) {
+            play()
+        }
+    }
+
     private fun play() {
         if (!mediaPlayer.isPlaying) {
             mediaPlayer.start()
+            _isPlaying.value = true // Mettre à jour l'état de lecture
         }
     }
 
     private fun pause() {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.pause()
+            _isPlaying.value = false // Mettre à jour l'état de lecture
         }
     }
 
     private fun stop() {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
+            _isPlaying.value = false // Mettre à jour l'état de lecture
         }
     }
 }

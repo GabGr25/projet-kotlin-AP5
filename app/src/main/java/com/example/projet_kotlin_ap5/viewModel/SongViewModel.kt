@@ -23,12 +23,13 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
         viewModelScope.launch {
             val currentSong = audioPlayerService.currentSongFlow.value
 
-            if (currentSong != null && (currentSong.lyrics == "No Lyrics")) {
+            if (currentSong != null && (currentSong.lyrics == "No lyrics")) {
                 val artist = currentSong.artist
                 val title = currentSong.title
 
                 try {
                     val response = ApiClient.apiService.getLyrics(artist, title)
+                    Log.d("updateLyrics", "Resultat response: $response")
 
                     if (response.isSuccessful) {
                         val lyrics = response.body()?.lyrics
@@ -49,7 +50,7 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
                 }
 
                 navController.navigate("Lyrics")
-            } else if (currentSong != null && currentSong.lyrics != "No Lyrics") {
+            } else if (currentSong != null && currentSong.lyrics != "No lyrics") {
                 navController.navigate("Lyrics")
             } else {
                 println("No song is currently playing")
