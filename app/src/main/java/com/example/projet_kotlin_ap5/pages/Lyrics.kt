@@ -41,10 +41,10 @@ fun Lyrics(
             ) {
                 currentSong?.let { navController.navigate("player_audio/${it.id}") }
             }
-            TitleText("Lyrics :", 0.28f)
+            TitleText("Lyrics :", 0.36f)
         }
 
-        if (currentSong?.lyrics != null && currentSong.lyrics != "No Lyrics") {
+        if (currentSong?.lyrics != null && currentSong.lyrics != "No lyrics") {
             Text(
                 text = currentSong.lyrics,
                 fontSize = 16.sp,

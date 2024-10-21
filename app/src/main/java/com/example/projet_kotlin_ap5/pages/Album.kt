@@ -39,7 +39,7 @@ fun Album(navController: NavController, songViewModel: SongViewModel, audioPlaye
             .padding(top = 10.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        TitleText("Albums", 0.55f)
+        TitleText("Albums", 0.28f)
         if (albums.isNotEmpty()) {
             VerticalCarousel(navController, albums, clickableImageCallback = { album ->
                 CoroutineScope(Dispatchers.IO).launch {

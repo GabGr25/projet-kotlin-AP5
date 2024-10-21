@@ -27,17 +27,16 @@ import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 
 @Composable
 fun CreateParolesButton(navController: NavController, audioPlayerService: AudioPlayerService, songViewModel: SongViewModel) {
-    //val parolesViewModel: ParolesViewModel = viewModel()
 
     Button(
         onClick = { songViewModel.updateLyrics(audioPlayerService, navController) },
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+            .padding(top = 16.dp, bottom = 16.dp)
             .clip(RoundedCornerShape(50))
             .border(2.dp, Color.Gray, RoundedCornerShape(50))
-            .height(64.dp)
+            .height(50.dp)
+            .width(150.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -50,16 +49,17 @@ fun CreateParolesButton(navController: NavController, audioPlayerService: AudioP
                 painter = painterResource(id = R.drawable.microphone),
                 contentDescription = "Microphone Icon",
                 tint = Color.Gray,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = "Paroles",
                 color = Color.Gray,
-                fontSize = 18.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = lexendFontFamily
             )
         }
     }
 }
+

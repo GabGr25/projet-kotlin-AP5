@@ -127,7 +127,7 @@ class MainActivity : ComponentActivity() {
                         // NavHost for managing navigation between different screens
                         NavHost(
                             navController = navController,
-                            startDestination = "Album",  // Starting screen
+                            startDestination = "Home",  // Starting screen
                             modifier = Modifier.fillMaxSize()
                         ) {
                             // Define your composable screens here
