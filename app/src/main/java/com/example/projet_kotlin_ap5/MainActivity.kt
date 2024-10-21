@@ -32,6 +32,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 import com.example.projet_kotlin_ap5.viewModel.SongViewModelFactory
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
@@ -40,6 +41,7 @@ import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
 import com.example.projet_kotlin_ap5.viewModel.ParolesViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -166,24 +168,16 @@ class MainActivity : ComponentActivity() {
         private fun loadMusicFiles() {
             Toaster.toastSomething(this, "Scan des fichiers en cours...")
 
-            runBlocking {
+            lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
                     val musicList = musicScanner.loadMusicFiles()
 
-                    // TODO: Optimiser le seed de la base de données pour la production
                     val database = MusicDatabase.getDatabase(this@MainActivity)
                     Log.d("dev", "Suppression de la DB")
                     database.songDao().deleteAll()
                     Log.d("dev", "Seed de la DB")
                     database.songDao().insertAll(musicList)
                 }
-//                val database = MusicDatabase.getDatabase(this@MainActivity)
-//                Log.d("dev", "Suppression de la DB")
-//                database.songDao().deleteAll()
-//                Log.d("dev", "Seed de la DB")
-//                database.songDao().insertAll(musicList)
-//                //val song = SongEntity(id=1000019705, title="LIF", album="Autobahn", artist="SCH", duration=195657, fileName="02-sch-lif.mp3", pathName="Autobahn/", lyrics="No lyrics")
-//                //database.songDao().insertOne(song)
             }
         }
     }

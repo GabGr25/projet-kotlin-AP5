@@ -22,10 +22,15 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     suspend fun loadAlbum(album: String) {
         val loadedAlbum = songViewModel.getSongsByAlbum(album)
         currentPlaylist = loadedAlbum
-        _currentSong.value = loadedAlbum[0]
-        loadSong(_currentSong.value!!)
-        Log.d("dev", "Album loaded: $album with ${loadedAlbum.size} songs. Current song: ${_currentSong.value!!.title}")
-    }
+        if (loadedAlbum.isNotEmpty()) {
+            _currentSong.value = loadedAlbum[0]
+            loadSong(_currentSong.value!!)
+            Log.d("dev", "Album loaded: $album with ${loadedAlbum.size} songs. Current song: ${_currentSong.value!!.title}")
+
+        } else {
+            Log.e("AudioPlayerService", "Aucun album trouvé.")
+        }
+            }
 
     // Sauter à la chanson suivante
     fun skipToNextSong() {
