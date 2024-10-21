@@ -32,12 +32,14 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
-import com.example.projet_kotlin_ap5.models.SongViewModel
-import com.example.projet_kotlin_ap5.models.SongViewModelFactory
+import androidx.lifecycle.lifecycleScope
+import com.example.projet_kotlin_ap5.viewModel.SongViewModel
+import com.example.projet_kotlin_ap5.viewModel.SongViewModelFactory
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
+import com.example.projet_kotlin_ap5.pages.Lyrics
 import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
-import kotlinx.coroutines.CoroutineScope
+import com.example.projet_kotlin_ap5.viewModel.ParolesViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -46,6 +48,7 @@ import kotlinx.coroutines.withContext
 class MainActivity : ComponentActivity() {
 
     private lateinit var songViewModel: SongViewModel
+    private lateinit var paroleViewModel: ParolesViewModel
     private lateinit var musicScanner: MusicScanner
 
     // Gérer le résultat de la demande de permission
@@ -72,6 +75,7 @@ class MainActivity : ComponentActivity() {
         // Initialisation ViewModel
         songViewModel = ViewModelProvider(this, SongViewModelFactory(database))
             .get(SongViewModel::class.java)
+        paroleViewModel = ParolesViewModel(database, songViewModel)
         musicScanner = MusicScanner(this)
 
         // Vérifier et demander les permissions
@@ -95,8 +99,6 @@ class MainActivity : ComponentActivity() {
 
         // Initialisation du service de lecture audio
         val audioPlayerService = AudioPlayerService(songViewModel)
-        // TODO: Remove this devLoad call just for testing purposes
-        // devLoad(audioPlayerService)
 
         setContent {
             ProjetkotlinAP5Theme {
@@ -125,7 +127,7 @@ class MainActivity : ComponentActivity() {
                         // NavHost for managing navigation between different screens
                         NavHost(
                             navController = navController,
-                            startDestination = "Album",  // Starting screen
+                            startDestination = "Home",  // Starting screen
                             modifier = Modifier.fillMaxSize()
                         ) {
                             // Define your composable screens here
@@ -146,9 +148,13 @@ class MainActivity : ComponentActivity() {
                                 //Play(navController = navController, songViewModel)
                             }
 
+                            composable("Lyrics") {
+                                Lyrics(navController = navController, audioPlayerService)
+                            }
+
                             composable("player_audio/{imageName}") { backStackEntry ->
                                 val imageName = backStackEntry.arguments?.getString("imageName")
-                                PlayerAudio(imageName = imageName, navController = navController, audioPlayerService)
+                                PlayerAudio(navController = navController, songViewModel, audioPlayerService)
                             }
                             }
                         }

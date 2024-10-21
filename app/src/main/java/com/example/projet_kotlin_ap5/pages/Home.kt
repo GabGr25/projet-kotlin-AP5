@@ -22,12 +22,12 @@ fun Home(navController: NavController, modifier: Modifier = Modifier){
             .padding(top = 10.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        TitleText("Écoutés récemment", 0.66f)
-        Caroussel(navController,listOf("img1", "img2", "img3", "img4"))
+        TitleText("Écoutés récemment", 0.75f)
+        Caroussel(navController,listOf("memoria", "nibiru", "autobahn", "zinzin"))
 
         Spacer(modifier = Modifier.height(5.dp)) // Espacement entre les deux titres
 
-        TitleText("Playlists du moment", 0.68f)
+        TitleText("Playlists du moment", 0.79f)
         SquareView(navController, listOf("playlist1", "playlist2"), listOf("playlist3", "playlist4"))
     }
 }

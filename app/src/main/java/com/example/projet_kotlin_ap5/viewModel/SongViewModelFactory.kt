@@ -1,4 +1,4 @@
-package com.example.projet_kotlin_ap5.models
+package com.example.projet_kotlin_ap5.viewModel
 
 import androidx.lifecycle.ViewModel
 
