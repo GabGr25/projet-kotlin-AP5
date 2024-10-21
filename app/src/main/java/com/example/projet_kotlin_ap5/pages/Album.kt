@@ -9,10 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.TitleText
 import com.example.projet_kotlin_ap5.components.VerticalCarousel
-import com.example.projet_kotlin_ap5.models.SongViewModel
+import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

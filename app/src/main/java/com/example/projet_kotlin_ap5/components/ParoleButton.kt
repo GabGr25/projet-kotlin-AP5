@@ -23,13 +23,14 @@ import com.example.projet_kotlin_ap5.R
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
 import com.example.projet_kotlin_ap5.viewModel.ParolesViewModel
+import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 
 @Composable
-fun CreateParolesButton(navController: NavController, audioPlayerService: AudioPlayerService) {
-    val parolesViewModel: ParolesViewModel = viewModel()
+fun CreateParolesButton(navController: NavController, audioPlayerService: AudioPlayerService, songViewModel: SongViewModel) {
+    //val parolesViewModel: ParolesViewModel = viewModel()
 
     Button(
-        onClick = { parolesViewModel.onParolesButtonClicked(navController, audioPlayerService) },
+        onClick = { songViewModel.updateLyrics(audioPlayerService, navController) },
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         modifier = Modifier
             .fillMaxWidth()

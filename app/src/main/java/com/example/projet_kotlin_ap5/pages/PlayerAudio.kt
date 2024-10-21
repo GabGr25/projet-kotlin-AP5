@@ -29,11 +29,12 @@ import com.example.projet_kotlin_ap5.components.CreateRoundButton
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 import com.example.projet_kotlin_ap5.pages.MusicPlayer.Paused
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
+import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PlayerAudio(navController: NavController, audioPlayerService: AudioPlayerService) {
+fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audioPlayerService: AudioPlayerService) {
     val currentSong = audioPlayerService.currentSongFlow.collectAsState(initial = null) // Observer le flux de chansons
 
     Column(
@@ -106,7 +107,7 @@ fun PlayerAudio(navController: NavController, audioPlayerService: AudioPlayerSer
                 audioPlayerService.skipToNextSong()
             }
         }
-        CreateParolesButton(navController, audioPlayerService)
+        CreateParolesButton(navController, songViewModel = songViewModel, audioPlayerService = audioPlayerService)
     }
 }
 

@@ -1,12 +1,15 @@
-package com.example.projet_kotlin_ap5.models
+package com.example.projet_kotlin_ap5.viewModel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.MusicDatabase
+import com.example.projet_kotlin_ap5.api.ApiClient
 import com.example.projet_kotlin_ap5.entities.SongEntity
+import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import kotlinx.coroutines.launch
 
 class SongViewModel(private val database: MusicDatabase) : ViewModel() {
@@ -15,6 +18,44 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
     val hasSongs: LiveData<Boolean> get() = _hasSongs
 
     val allSongs: LiveData<List<SongEntity>> = database.songDao().getAllSongsLiveData()
+
+    fun updateLyrics(audioPlayerService: AudioPlayerService, navController: NavController) {
+        viewModelScope.launch {
+            val currentSong = audioPlayerService.currentSongFlow.value
+
+            if (currentSong != null && (currentSong.lyrics == "No Lyrics")) {
+                val artist = currentSong.artist
+                val title = currentSong.title
+
+                try {
+                    val response = ApiClient.apiService.getLyrics(artist, title)
+
+                    if (response.isSuccessful) {
+                        val lyrics = response.body()?.lyrics
+
+                        if (lyrics != null) {
+                            val updatedSong = currentSong.copy(lyrics = lyrics)
+                            updateSong(updatedSong)
+
+                            audioPlayerService.loadSong(updatedSong)
+                        } else {
+                            println("No lyrics found for this song")
+                        }
+                    } else {
+                        println("Failed to fetch lyrics: ${response.code()}")
+                    }
+                } catch (e: Exception) {
+                    println("Error fetching lyrics: ${e.message}")
+                }
+
+                navController.navigate("Lyrics")
+            } else if (currentSong != null && currentSong.lyrics != "No Lyrics") {
+                navController.navigate("Lyrics")
+            } else {
+                println("No song is currently playing")
+            }
+        }
+    }
 
     fun logAllSongs() {
         viewModelScope.launch {

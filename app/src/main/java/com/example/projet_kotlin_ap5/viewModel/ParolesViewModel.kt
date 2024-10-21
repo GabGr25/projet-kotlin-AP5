@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projet_kotlin_ap5.api.ApiClient
 import androidx.navigation.NavController
-import com.example.projet_kotlin_ap5.models.SongViewModel
+import com.example.projet_kotlin_ap5.MusicDatabase
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import kotlinx.coroutines.launch
 
-class ParolesViewModel(private val songViewModel: SongViewModel) : ViewModel() {
+class ParolesViewModel(private val database: MusicDatabase, private val songViewModel: SongViewModel) : ViewModel() {
 
     fun onParolesButtonClicked(navController: NavController, audioPlayerService: AudioPlayerService) {
         viewModelScope.launch {

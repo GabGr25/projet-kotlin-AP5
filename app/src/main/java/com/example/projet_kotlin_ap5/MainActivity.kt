@@ -32,13 +32,13 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
-import com.example.projet_kotlin_ap5.entities.SongEntity
-import com.example.projet_kotlin_ap5.models.SongViewModel
-import com.example.projet_kotlin_ap5.models.SongViewModelFactory
+import com.example.projet_kotlin_ap5.viewModel.SongViewModel
+import com.example.projet_kotlin_ap5.viewModel.SongViewModelFactory
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.pages.Lyrics
 import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
+import com.example.projet_kotlin_ap5.viewModel.ParolesViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -46,6 +46,7 @@ import kotlinx.coroutines.withContext
 class MainActivity : ComponentActivity() {
 
     private lateinit var songViewModel: SongViewModel
+    private lateinit var paroleViewModel: ParolesViewModel
     private lateinit var musicScanner: MusicScanner
 
     // Gérer le résultat de la demande de permission
@@ -72,6 +73,7 @@ class MainActivity : ComponentActivity() {
         // Initialisation ViewModel
         songViewModel = ViewModelProvider(this, SongViewModelFactory(database))
             .get(SongViewModel::class.java)
+        paroleViewModel = ParolesViewModel(database, songViewModel)
         musicScanner = MusicScanner(this)
 
         // Vérifier et demander les permissions
@@ -95,8 +97,6 @@ class MainActivity : ComponentActivity() {
 
         // Initialisation du service de lecture audio
         val audioPlayerService = AudioPlayerService(songViewModel)
-        // TODO: Remove this devLoad call just for testing purposes
-        // devLoad(audioPlayerService)
 
         setContent {
             ProjetkotlinAP5Theme {
@@ -152,7 +152,7 @@ class MainActivity : ComponentActivity() {
 
                             composable("player_audio/{imageName}") { backStackEntry ->
                                 val imageName = backStackEntry.arguments?.getString("imageName")
-                                PlayerAudio(navController = navController, audioPlayerService)
+                                PlayerAudio(navController = navController, songViewModel, audioPlayerService)
                             }
                             }
                         }
@@ -177,13 +177,13 @@ class MainActivity : ComponentActivity() {
                     Log.d("dev", "Seed de la DB")
                     database.songDao().insertAll(musicList)
                 }
-                val database = MusicDatabase.getDatabase(this@MainActivity)
-                Log.d("dev", "Suppression de la DB")
-                database.songDao().deleteAll()
-                Log.d("dev", "Seed de la DB")
-                //database.songDao().insertAll(musicList)
-                val song = SongEntity(id=1000019705, title="LIF", album="Autobahn", artist="SCH", duration=195657, fileName="02-sch-lif.mp3", pathName="Autobahn/", lyrics="No lyrics")
-                database.songDao().insertOne(song)
+//                val database = MusicDatabase.getDatabase(this@MainActivity)
+//                Log.d("dev", "Suppression de la DB")
+//                database.songDao().deleteAll()
+//                Log.d("dev", "Seed de la DB")
+//                database.songDao().insertAll(musicList)
+//                //val song = SongEntity(id=1000019705, title="LIF", album="Autobahn", artist="SCH", duration=195657, fileName="02-sch-lif.mp3", pathName="Autobahn/", lyrics="No lyrics")
+//                //database.songDao().insertOne(song)
             }
         }
     }
