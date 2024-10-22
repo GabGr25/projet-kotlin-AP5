@@ -32,7 +32,6 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 import com.example.projet_kotlin_ap5.viewModel.SongViewModelFactory
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
@@ -40,14 +39,12 @@ import com.example.projet_kotlin_ap5.pages.Lyrics
 import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var songViewModel: SongViewModel
-    private lateinit var paroleViewModel: ParolesViewModel
     private lateinit var musicScanner: MusicScanner
 
     // Gérer le résultat de la demande de permission
@@ -74,7 +71,6 @@ class MainActivity : ComponentActivity() {
         // Initialisation ViewModel
         songViewModel = ViewModelProvider(this, SongViewModelFactory(database))
             .get(SongViewModel::class.java)
-        paroleViewModel = ParolesViewModel(database, songViewModel)
         musicScanner = MusicScanner(this)
 
         // Vérifier et demander les permissions
