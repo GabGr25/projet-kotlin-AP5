@@ -10,7 +10,7 @@ import com.example.projet_kotlin_ap5.dao.SongDao
 import com.example.projet_kotlin_ap5.entities.SongEntity
 import com.example.projet_kotlin_ap5.services.BitmapToBiteArrayConverter
 
-@Database(entities = [SongEntity::class], version = 5)
+@Database(entities = [SongEntity::class], version = 6)
 @TypeConverters(BitmapToBiteArrayConverter::class)
 abstract class MusicDatabase : RoomDatabase() {
 

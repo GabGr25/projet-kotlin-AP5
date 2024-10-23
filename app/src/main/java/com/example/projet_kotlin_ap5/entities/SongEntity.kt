@@ -7,11 +7,10 @@ import androidx.room.PrimaryKey
 data class SongEntity(
     @PrimaryKey val id: Long = 0,
     val title: String = "Unknown Song Title",
-    val album: AlbumEntity,
-    val artist: String, // TODO: Relier avec ArtistEntity
+    val albumId: Long = 0,
+    val artistId: Long = 0,
     val duration: Int,
     val fileName: String,
     val pathName: String,
     val lyrics: String = "No lyrics",
-    //val thumbnail: Bitmap? = null
 )

@@ -68,7 +68,7 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
         }
 
         Text("${currentSong.value?.title}", color = Color.White, fontSize = 24.sp)
-        Text("${currentSong.value?.album}", color = Color.LightGray, fontSize = 18.sp)
+        Text("${playlistInfos.value.name}", color = Color.LightGray, fontSize = 18.sp)
         Text("${currentSong.value?.artist}", color = Color.DarkGray, fontSize = 18.sp)
 
         // Contrôles de lecture
