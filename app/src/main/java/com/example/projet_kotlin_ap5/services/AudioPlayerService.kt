@@ -3,30 +3,42 @@ package com.example.projet_kotlin_ap5.services
 import android.media.MediaPlayer
 import android.os.Environment
 import android.util.Log
+import com.example.projet_kotlin_ap5.entities.AlbumEntity
 import com.example.projet_kotlin_ap5.entities.SongEntity
+import com.example.projet_kotlin_ap5.viewModel.AlbumViewModel
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
-import kotlinx.coroutines.joinAll
 
 class AudioPlayerService(private val songViewModel: SongViewModel) {
     val mediaPlayer = MediaPlayer()
     val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
 
+    // Current Loaded song ready to play
     private val _currentSong = MutableStateFlow<SongEntity?>(null)
-    val currentSongFlow: StateFlow<SongEntity?> = _currentSong.asStateFlow() // Exposer StateFlow en lecture seule
-    var currentPlaylist: List<SongEntity>? = null
-    private val _isPlaying = MutableStateFlow(false) // Flux d'état pour savoir si la musique est en cours de lecture
-    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow() // Expose en lecture seule
+    val currentSongFlow: StateFlow<SongEntity?> = _currentSong.asStateFlow()
+
+    // Current list of songs availables for the playlist
+    private val _currentPlaylist = MutableStateFlow<List<SongEntity>>(emptyList())
+    var currentPlaylist: StateFlow<List<SongEntity>> = _currentPlaylist.asStateFlow()
+
+    // Is playing boolean to know if a song is playing
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+
+    // Current playlist infos (name, thumbnail, Artist?)
+    private val _playlistInfos = MutableStateFlow<AlbumEntity?>(null)
+    val playlistInfos: StateFlow<AlbumEntity?> = _playlistInfos.asStateFlow()
 
     // Charger un album entier
-    suspend fun loadAlbum(album: String) {
+    suspend fun loadAlbum(album: AlbumEntity) {
         // Récupérer les chansons de l'album
-        val loadedAlbum = songViewModel.getSongsByAlbum(album)
-        currentPlaylist = loadedAlbum
+        val loadedAlbum = songViewModel.getSongsByAlbum(album.name)
+        _currentPlaylist.value = loadedAlbum
+        _playlistInfos.value = album
         if (loadedAlbum.isNotEmpty()) {
             // Charger les lyrics pour chaque chanson de l'album
             val lyricsUpdateJobs = loadedAlbum.map { song ->
@@ -48,13 +60,13 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     // Sauter à la chanson suivante
     fun skipToNextSong() {
         stop()
-        if (currentPlaylist != null && _currentSong.value != null) {
-            val currentIndex = currentPlaylist!!.indexOf(_currentSong.value)
+        if (_currentSong.value != null) {
+            val currentIndex = _currentPlaylist.value.indexOf(_currentSong.value)
 
-            if (currentIndex < currentPlaylist!!.size - 1) {
-                _currentSong.value = currentPlaylist!![currentIndex + 1]
+            if (currentIndex < _currentPlaylist.value.size - 1) {
+                _currentSong.value = _currentPlaylist.value[currentIndex + 1]
             } else {
-                _currentSong.value = currentPlaylist!![0] // Revenir à la première chanson si à la fin de la liste
+                _currentSong.value = _currentPlaylist.value[0] // Revenir à la première chanson si à la fin de la liste
             }
 
             loadSong(_currentSong.value!!)
@@ -65,12 +77,12 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     // Revenir à la chanson précédente
     fun skipToPreviousSong() {
         stop()
-        if (currentPlaylist != null && _currentSong.value != null) {
-            val currentIndex = currentPlaylist!!.indexOf(_currentSong.value)
+        if (_currentSong.value != null) {
+            val currentIndex = _currentPlaylist.value.indexOf(_currentSong.value)
             if (currentIndex > 0) {
-                _currentSong.value = currentPlaylist!![currentIndex - 1]
+                _currentSong.value = _currentPlaylist.value[currentIndex - 1]
             } else {
-                _currentSong.value = currentPlaylist!![currentPlaylist!!.size - 1] // Aller à la dernière chanson si au début de la liste
+                _currentSong.value = _currentPlaylist.value[_currentPlaylist.value.size - 1] // Aller à la dernière chanson si au début de la liste
             }
 
             loadSong(_currentSong.value!!)

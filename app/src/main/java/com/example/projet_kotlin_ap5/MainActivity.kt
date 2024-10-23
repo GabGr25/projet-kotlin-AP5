@@ -165,10 +165,11 @@ class MainActivity : ComponentActivity() {
 
             runBlocking {
                 withContext(Dispatchers.IO) {
-                    val musicList = musicScanner.loadMusicFiles()
+                    val database = MusicDatabase.getDatabase(this@MainActivity)
+
+                    val musicList = musicScanner.loadMusicFiles(database)
 
                     // TODO: Optimiser le seed de la base de données pour la production
-                    val database = MusicDatabase.getDatabase(this@MainActivity)
                     Log.d("dev", "Suppression de la DB")
                     database.songDao().deleteAll()
                     Log.d("dev", "Seed de la DB")

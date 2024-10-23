@@ -24,10 +24,10 @@ interface AlbumDao {
     suspend fun getAlbumsFromArtist(artist: String): List<AlbumEntity>
 
     @Query("SELECT * FROM album WHERE album.id = :id")
-    suspend fun getAlbumById(id: Long): AlbumEntity
+    suspend fun getAlbumById(id: Long): AlbumEntity?
 
     @Query("SELECT * FROM album WHERE album.name = :name")
-    suspend fun getAlbumByName(name: String): AlbumEntity
+    suspend fun getAlbumByName(name: String): AlbumEntity?
 
     @Query("DELETE FROM album")
     suspend fun deleteAll()
