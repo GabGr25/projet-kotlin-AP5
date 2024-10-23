@@ -22,7 +22,6 @@ import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.R
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
-import com.example.projet_kotlin_ap5.viewModel.ParolesViewModel
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 
 @Composable

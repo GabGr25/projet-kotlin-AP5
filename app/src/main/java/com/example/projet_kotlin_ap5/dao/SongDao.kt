@@ -1,4 +1,4 @@
-package com.example.projet_kotlin_ap5
+package com.example.projet_kotlin_ap5.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

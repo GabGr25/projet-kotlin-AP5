@@ -31,8 +31,9 @@ import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audioPlayerService: AudioPlayerService) {
-    val currentSong = audioPlayerService.currentSongFlow.collectAsState(initial = null) // Observer le flux de chansons
-    val isPlaying = audioPlayerService.isPlaying.collectAsState(initial = false) // Observer l'état de lecture
+    val currentSong = audioPlayerService.currentSongFlow.collectAsState(initial = null)
+    val isPlaying = audioPlayerService.isPlaying.collectAsState(initial = false)
+    val playlistInfos = audioPlayerService.playlistInfos.collectAsState(initial = null)
 
     Column(
         modifier = Modifier
@@ -55,7 +56,7 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
         Spacer(modifier = Modifier.height(10.dp))
 
         // Image et détails de la chanson courante
-        currentSong.value?.thumbnail?.let {
+        playlistInfos.value?.thumbnail?.let {
             Image(
                 bitmap = it.asImageBitmap(),
                 contentDescription = null,
@@ -67,7 +68,7 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
         }
 
         Text("${currentSong.value?.title}", color = Color.White, fontSize = 24.sp)
-        Text("${currentSong.value?.album}", color = Color.LightGray, fontSize = 18.sp)
+        Text("${playlistInfos.value.name}", color = Color.LightGray, fontSize = 18.sp)
         Text("${currentSong.value?.artist}", color = Color.DarkGray, fontSize = 18.sp)
 
         // Contrôles de lecture
@@ -82,7 +83,7 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
             }
 
             ClickableImage(if (isPlaying.value) "pause" else "play", 55.dp) {
-                audioPlayerService.togglePlay() // Joue ou met en pause
+                audioPlayerService.togglePlay()
             }
 
             ClickableImage("suivant", 55.dp) {
