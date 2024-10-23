@@ -29,6 +29,9 @@ interface AlbumDao {
     @Query("SELECT * FROM album WHERE album.name = :name")
     suspend fun getAlbumByName(name: String): AlbumEntity?
 
+    @Query("SELECT thumbnail FROM album WHERE album.id = :id")
+    suspend fun getAlbumThumbnailById(id: Long): ByteArray?
+
     @Query("DELETE FROM album")
     suspend fun deleteAll()
 }

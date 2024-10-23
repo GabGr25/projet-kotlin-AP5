@@ -11,6 +11,8 @@ class AlbumViewModel(private val database: MusicDatabase) {
 
     suspend fun getAlbumByName(name: String) = database.albumDao().getAlbumByName(name)
 
+    suspend fun getAlbumThumbnailById(id: Long) = database.albumDao().getAlbumThumbnailById(id)
+
     suspend fun insertOne(albumEntity: AlbumEntity) = database.albumDao().insertOne(albumEntity)
 
     suspend fun insertAll(albums: List<AlbumEntity>) = database.albumDao().insertAll(albums)

@@ -23,7 +23,7 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
 
     // Current list of songs availables for the playlist
     private val _currentPlaylist = MutableStateFlow<List<SongEntity>>(emptyList())
-    var currentPlaylist: StateFlow<List<SongEntity>> = _currentPlaylist.asStateFlow()
+    val currentPlaylist: StateFlow<List<SongEntity>> = _currentPlaylist.asStateFlow()
 
     // Is playing boolean to know if a song is playing
     private val _isPlaying = MutableStateFlow(false)
