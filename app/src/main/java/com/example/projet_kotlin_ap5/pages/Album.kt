@@ -11,8 +11,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.TitleText
 import com.example.projet_kotlin_ap5.components.VerticalCarousel
+import com.example.projet_kotlin_ap5.entities.AlbumEntity
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
+import com.example.projet_kotlin_ap5.viewModel.AlbumViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,15 +22,17 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 @Composable
-fun Album(navController: NavController, songViewModel: SongViewModel, audioPlayerService: AudioPlayerService, modifier: Modifier = Modifier){
+fun Album(navController: NavController, albumViewModel: AlbumViewModel, audioPlayerService: AudioPlayerService, modifier: Modifier = Modifier){
 
-    val albums: MutableList<String> = emptyList<String>().toMutableList()
+    val albums: MutableList<AlbumEntity> = emptyList<AlbumEntity>().toMutableList()
     runBlocking {
         withContext(Dispatchers.IO) {
-            val rawAlbums = songViewModel.getAlbums()
-            for (album in rawAlbums) {
-                albums += album.lowercase().replace(" ", "_")
+            Log.d("dev", "GETTING 5 ALBUMS")
+            val rawAlbums = albumViewModel.getFirstFiveAlbums()
+            rawAlbums.forEach { album ->
+                albums.add(album)
             }
+
             Log.d("dev", albums.toString())
         }
     }

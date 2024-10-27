@@ -32,23 +32,21 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 import com.example.projet_kotlin_ap5.viewModel.SongViewModelFactory
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.pages.Lyrics
 import com.example.projet_kotlin_ap5.services.MusicScanner
 import com.example.projet_kotlin_ap5.services.Toaster
-import com.example.projet_kotlin_ap5.viewModel.ParolesViewModel
+import com.example.projet_kotlin_ap5.viewModel.AlbumViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var songViewModel: SongViewModel
-    private lateinit var paroleViewModel: ParolesViewModel
+    private lateinit var albumViewModel: AlbumViewModel
     private lateinit var musicScanner: MusicScanner
 
     // Gérer le résultat de la demande de permission
@@ -75,7 +73,7 @@ class MainActivity : ComponentActivity() {
         // Initialisation ViewModel
         songViewModel = ViewModelProvider(this, SongViewModelFactory(database))
             .get(SongViewModel::class.java)
-        paroleViewModel = ParolesViewModel(database, songViewModel)
+        albumViewModel = AlbumViewModel(database)
         musicScanner = MusicScanner(this)
 
         // Vérifier et demander les permissions
@@ -136,7 +134,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable("Album") {
-                                Album(navController = navController, songViewModel, audioPlayerService)
+                                Album(navController = navController, albumViewModel, audioPlayerService)
                             }
 
                             composable("Artiste") {
@@ -170,10 +168,11 @@ class MainActivity : ComponentActivity() {
 
             runBlocking {
                 withContext(Dispatchers.IO) {
-                    val musicList = musicScanner.loadMusicFiles()
+                    val database = MusicDatabase.getDatabase(this@MainActivity)
+
+                    val musicList = musicScanner.loadMusicFiles(database)
 
                     // TODO: Optimiser le seed de la base de données pour la production
-                    val database = MusicDatabase.getDatabase(this@MainActivity)
                     Log.d("dev", "Suppression de la DB")
                     database.songDao().deleteAll()
                     Log.d("dev", "Seed de la DB")

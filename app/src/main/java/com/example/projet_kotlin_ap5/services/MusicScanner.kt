@@ -9,7 +9,10 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
 import androidx.annotation.RequiresApi
+import com.example.projet_kotlin_ap5.MusicDatabase
 import com.example.projet_kotlin_ap5.R
+import com.example.projet_kotlin_ap5.entities.AlbumEntity
+import com.example.projet_kotlin_ap5.entities.ArtistEntity
 import com.example.projet_kotlin_ap5.entities.SongEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +22,7 @@ class MusicScanner(private val context: Context) {
     private val defaultThumbnail: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.zinzin)
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    suspend fun loadMusicFiles(): List<SongEntity> = withContext(Dispatchers.IO) {
+    suspend fun loadMusicFiles(database: MusicDatabase): List<SongEntity> = withContext(Dispatchers.IO) {
         val musicList = mutableListOf<SongEntity>()
         val contentResolver: ContentResolver = context.contentResolver
 
@@ -53,19 +56,34 @@ class MusicScanner(private val context: Context) {
             val titleColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
             val artistColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
 
-
-
             while (it.moveToNext()) {
                 val id = it.getLong(idColumn)
                 val fileName = it.getString(fileNameColumn)
                 val duration = it.getInt(durationColumn)
                 val pathName = it.getString(pathNameColumn).removePrefix("Music/")
-                val album = it.getString(albumColumn)
+                val albumName = it.getString(albumColumn).lowercase().replace(" ", "_")
                 val title = it.getString(titleColumn)
-                val artist = it.getString(artistColumn)
-                val thumbnail = loadThumbnail(contentResolver, id)
+                val artistName = it.getString(artistColumn)
 
-                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName, thumbnail = thumbnail))
+                // Checking if artist is already in the list
+                var artist = database.artistDao().getArtistByName(artistName)
+                if (artist == null) {
+                    artist = ArtistEntity(name = artistName)
+                    database.artistDao().insertOne(artist)
+                }
+
+
+                // Checking if album is already in the list
+                var album = database.albumDao().getAlbumByName(albumName)
+                if (album == null) {
+                    // Loading the thumbnail only if the album is not yet saved
+                    val thumbnail = loadThumbnailOrDefault(contentResolver, id)
+
+                    album = AlbumEntity(name = albumName, thumbnail = thumbnail, artistId = artist.id)
+                    database.albumDao().insertOne(album)
+                }
+
+                musicList.add(SongEntity(id, title, album.id, artist.id, duration, fileName, pathName))
             }
         }
         musicList
@@ -79,10 +97,10 @@ class MusicScanner(private val context: Context) {
     // TODO: Optimiser le stockage en BD des images par album
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun loadThumbnailOrDefault(contentResolver: ContentResolver, songId: Long): Bitmap {
-        return try {
+        try {
             // Tente de charger la miniature
             val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
-            contentResolver.loadThumbnail(uri, Size(640, 480), null)
+            return contentResolver.loadThumbnail(uri, Size(640, 480), null)
         } catch (e: Exception) {
             // Si une erreur survient, charge l'image par défaut
             return defaultThumbnail

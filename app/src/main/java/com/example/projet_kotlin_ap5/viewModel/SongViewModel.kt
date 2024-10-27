@@ -24,10 +24,19 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
 
     fun updateLyricsForSong(song: SongEntity): Deferred<Unit> {
         return viewModelScope.async {
-            val artist = song.artist
+            val artist = song.artistId
+
+            // Getting artist name
+            val artistName = database.artistDao().getArtistById(artist)?.name
+
             val title = song.title
             try {
-                val response = ApiClient.apiService.getLyrics(artist, title)
+                if (artistName == null) {
+                    Log.e("updateLyrics", "Artist not found for song: ${song.title}")
+                    throw Exception("Artist not found")
+                }
+
+                val response = ApiClient.apiService.getLyrics(artistName, title)
                 Log.d("updateLyrics", "Resultat response: $response")
 
                 if (response.isSuccessful) {
@@ -69,76 +78,19 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
             }
         }
     }
-
-    fun logAllArtists() {
-        viewModelScope.launch {
-            try {
-                val artists: List<String> = database.songDao().getArtists()
-                if (artists.isNotEmpty()) {
-                    Log.d("dbMusic", "Liste des artistes disponibles : ")
-                    artists.forEach{ artist ->
-                        Log.d("dbMusic", artist.toString())
-                    }
-                } else {
-                    Log.d("dbMusic", "Aucun artiste trouvé dans la base de données")
-                }
-            } catch (e: Exception) {
-                Log.e("dbMusic", "Erreur lors de la récupération des artistes : ${e.message}")
-            }
+    suspend fun getSongsByAlbumId(albumId: Long): List<SongEntity> {
+        return database.songDao().getSongsFromAlbumId(albumId)
+    }
+    suspend fun getSongsByAlbumName(album: String): List<SongEntity> {
+        val albumEntity = database.albumDao().getAlbumByName(album)
+        if (albumEntity != null) {
+            return database.songDao().getSongsFromAlbumId(albumEntity.id)
         }
-    }
-
-    fun logSongsByAlbum(album: String) {
-        viewModelScope.launch {
-            try {
-                val songs: List<SongEntity> = database.songDao().getSongsFromAlbum(album)
-                if (songs.isNotEmpty()) {
-                    Log.d("dbMusic", "Liste des chansons présentes sur cet album :")
-                    songs.forEach { song ->
-                        Log.d("dbMusic", song.toString())
-                    }
-                } else {
-                    Log.d("dbMusic", "Aucune chanson trouvée pour cet album dans la base de données.")
-                }
-            }  catch (e: Exception) {
-                Log.e("dbMusic", "Erreur lors de la récupération des chansons : ${e.message}")
-            }
-        }
-    }
-    suspend fun getSongsByAlbum(album: String): List<SongEntity> {
-        return database.songDao().getSongsFromAlbum(album)
-    }
-    suspend fun getAlbums(): List<String> {
-        return database.songDao().getAlbums()
+        return emptyList()
     }
 
     suspend fun getSongById(id: Long): SongEntity {
         return database.songDao().getSongById(id)
-    }
-
-    fun logSongsByArtist(artist: String) {
-        viewModelScope.launch {
-            try {
-                val songs: List<SongEntity> = database.songDao().getSongsFromArtist(artist)
-                if (songs.isNotEmpty()) {
-                    Log.d("dbMusic", "Liste des chansons présentes sur cet artiste :")
-                    songs.forEach { song ->
-                        Log.d("dbMusic", song.toString())
-                    }
-                } else {
-                    Log.d("dbMusic", "Aucune chanson trouvée pour cet artiste dans la base de données.")
-                }
-            }  catch (e: Exception) {
-                Log.e("dbMusic", "Erreur lors de la récupération des chansons : ${e.message}")
-            }
-        }
-    }
-
-    fun checkIfSongsExists() {
-        viewModelScope.launch {
-            val count = database.songDao().getSongsCount()
-            _hasSongs.postValue(count > 0)
-        }
     }
 
     fun updateSong(updatedSongEntity: SongEntity){

@@ -1,4 +1,4 @@
-package com.example.projet_kotlin_ap5
+package com.example.projet_kotlin_ap5.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -35,27 +35,16 @@ interface SongDao {
     @Query("SELECT COUNT(*) FROM song")
     suspend fun getSongsCount(): Int
 
-
-    // Getting by Filters
-
     // By Album
-    @Query("SELECT * FROM song WHERE song.album LIKE :requiredAlbum")
-    suspend fun getSongsFromAlbum(requiredAlbum: String): List<SongEntity>
+    @Query("SELECT * FROM song WHERE song.albumId LIKE :requiredAlbumId")
+    suspend fun getSongsFromAlbumId(requiredAlbumId: Long): List<SongEntity>
 
     // By Artist
-    @Query("SELECT * FROM song WHERE song.artist LIKE :requiredArtist")
-    suspend fun getSongsFromArtist(requiredArtist: String): List<SongEntity>
+    @Query("SELECT * FROM song WHERE song.artistId LIKE :requiredArtistId")
+    suspend fun getSongsFromArtistId(requiredArtistId: Long): List<SongEntity>
 
     // Getting All Albums by artist
-    @Query("SELECT album FROM song WHERE song.artist LIKE :requiredArtist GROUP BY album")
-    suspend fun getAlbumsFromArtist(requiredArtist: String): List<String>
+    @Query("SELECT albumId FROM song WHERE song.artistId LIKE :requiredArtistId GROUP BY albumId")
+    suspend fun getAlbumsFromArtist(requiredArtistId: Long): List<Long>
 
-    // Getting All Albums
-    @Query("SELECT album FROM song GROUP BY album")
-    suspend fun getAlbums(): List<String>
-
-
-    // Getting All Artists
-    @Query("SELECT artist FROM song GROUP BY artist")
-    suspend fun getArtists(): List<String>
 }
