@@ -23,7 +23,7 @@ fun getImageResourceId(context: Context, nameImage: String): Int? {
 }
 
 @Composable
-fun ClickableImage(nameImage: String, sizeImage: Dp, callback: ()->Unit) {
+fun ClickableImage(nameImage: String, sizeImage: Dp, modifier: Modifier, callback: ()->Unit) {
     val context = LocalContext.current
     val imageId = getImageResourceId(context, nameImage)
 
@@ -31,7 +31,7 @@ fun ClickableImage(nameImage: String, sizeImage: Dp, callback: ()->Unit) {
         Image(
             painter = painterResource(id = it),
             contentDescription = "Clickable Image",
-            modifier = Modifier
+            modifier = modifier
                 .size(sizeImage)
                 .clip(RoundedCornerShape(5.dp))
                 .clickable {

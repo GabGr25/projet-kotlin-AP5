@@ -21,7 +21,7 @@ fun Caroussel(navController: NavController, list: List<String>){
     ) {
         for ( name in list){
             item {
-                ClickableImage(name, 140.dp) {
+                ClickableImage(name, 140.dp, Modifier) {
                     navController.navigate("player_audio/$name")
                     //MusicPlayed.name.value = name
                 }

@@ -61,23 +61,6 @@ class SongViewModel(private val database: MusicDatabase) : ViewModel() {
         }
     }
 
-    fun logAllSongs() {
-        viewModelScope.launch {
-            try {
-                val songs: List<SongEntity> = database.songDao().getAllSongs()
-                if (songs.isNotEmpty()) {
-                    Log.d("dbMusic", "Liste des chansons dans la base de données :")
-                    songs.forEach { song ->
-                        Log.d("dbMusic", song.toString())
-                    }
-                } else {
-                    Log.d("dbMusic", "Aucune chanson trouvée dans la base de données.")
-                }
-            } catch (e: Exception) {
-                Log.e("dbMusic", "Erreur lors de la récupération des chansons : ${e.message}")
-            }
-        }
-    }
     suspend fun getSongsByAlbumId(albumId: Long): List<SongEntity> {
         return database.songDao().getSongsFromAlbumId(albumId)
     }

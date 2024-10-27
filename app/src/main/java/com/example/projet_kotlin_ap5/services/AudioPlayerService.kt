@@ -4,13 +4,17 @@ import android.media.MediaPlayer
 import android.os.Environment
 import android.util.Log
 import com.example.projet_kotlin_ap5.entities.AlbumEntity
+import com.example.projet_kotlin_ap5.entities.ArtistEntity
 import com.example.projet_kotlin_ap5.entities.SongEntity
 import com.example.projet_kotlin_ap5.viewModel.AlbumViewModel
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.io.File
 
 class AudioPlayerService(private val songViewModel: SongViewModel) {
@@ -29,9 +33,11 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
-    // Current playlist infos (name, thumbnail, Artist?)
+    // Current playlist infos (name, thumbnail)
     private val _playlistInfos = MutableStateFlow<AlbumEntity?>(null)
     val playlistInfos: StateFlow<AlbumEntity?> = _playlistInfos.asStateFlow()
+
+    // TODO: Add a currentArtist Flow
 
     // Charger un album entier
     suspend fun loadAlbum(album: AlbumEntity) {
@@ -103,6 +109,17 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
             _currentSong.value = songEntity // Mettre à jour la chanson courante
         } catch (e: Exception) {
             Log.e("dev", "Error loading song", e)
+        }
+    }
+
+    // Forcer le rafraîchissement des lyrics de la chanson actuelle
+    fun refreshCurrentSongLyrics() {
+        if (_currentSong.value != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val updatedSong = songViewModel.getSongById(_currentSong.value!!.id)
+                _currentSong.value = updatedSong
+                Log.d("dev", "Lyrics updated for current song: ${_currentSong.value!!.title}")
+            }
         }
     }
 
