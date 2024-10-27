@@ -5,7 +5,11 @@ import com.example.projet_kotlin_ap5.entities.AlbumEntity
 
 class AlbumViewModel(private val database: MusicDatabase) {
 
-    suspend fun getAlbumsFromArtist(artist: String) = database.albumDao().getAlbumsFromArtist(artist)
+    suspend fun getAllAlbums() = database.albumDao().getAllAlbums()
+
+    suspend fun getFirstFiveAlbums() = database.albumDao().getFirstFiveAlbums()
+
+    suspend fun getAlbumsFromArtist(artist: Long) = database.albumDao().getAlbumsFromArtist(artist)
 
     suspend fun getAlbumById(id: Long) = database.albumDao().getAlbumById(id)
 

@@ -36,9 +36,11 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
     // Charger un album entier
     suspend fun loadAlbum(album: AlbumEntity) {
         // Récupérer les chansons de l'album
-        val loadedAlbum = songViewModel.getSongsByAlbum(album.name)
+        val loadedAlbum = songViewModel.getSongsByAlbumId(album.id)
         _currentPlaylist.value = loadedAlbum
         _playlistInfos.value = album
+
+
         if (loadedAlbum.isNotEmpty()) {
             // Charger les lyrics pour chaque chanson de l'album
             val lyricsUpdateJobs = loadedAlbum.map { song ->

@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import com.example.projet_kotlin_ap5.MusicDatabase
 import com.example.projet_kotlin_ap5.R
 import com.example.projet_kotlin_ap5.entities.AlbumEntity
+import com.example.projet_kotlin_ap5.entities.ArtistEntity
 import com.example.projet_kotlin_ap5.entities.SongEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -60,9 +61,17 @@ class MusicScanner(private val context: Context) {
                 val fileName = it.getString(fileNameColumn)
                 val duration = it.getInt(durationColumn)
                 val pathName = it.getString(pathNameColumn).removePrefix("Music/")
-                val albumName = it.getString(albumColumn)
+                val albumName = it.getString(albumColumn).lowercase().replace(" ", "_")
                 val title = it.getString(titleColumn)
-                val artist = it.getString(artistColumn)
+                val artistName = it.getString(artistColumn)
+
+                // Checking if artist is already in the list
+                var artist = database.artistDao().getArtistByName(artistName)
+                if (artist == null) {
+                    artist = ArtistEntity(name = artistName)
+                    database.artistDao().insertOne(artist)
+                }
+
 
                 // Checking if album is already in the list
                 var album = database.albumDao().getAlbumByName(albumName)
@@ -70,11 +79,11 @@ class MusicScanner(private val context: Context) {
                     // Loading the thumbnail only if the album is not yet saved
                     val thumbnail = loadThumbnailOrDefault(contentResolver, id)
 
-                    album = AlbumEntity(name = albumName, thumbnail = thumbnail, artist = artist)
+                    album = AlbumEntity(name = albumName, thumbnail = thumbnail, artistId = artist.id)
                     database.albumDao().insertOne(album)
                 }
 
-                musicList.add(SongEntity(id, title, album, artist, duration, fileName, pathName))
+                musicList.add(SongEntity(id, title, album.id, artist.id, duration, fileName, pathName))
             }
         }
         musicList

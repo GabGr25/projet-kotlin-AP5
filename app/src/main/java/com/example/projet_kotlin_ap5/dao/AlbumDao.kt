@@ -1,5 +1,6 @@
 package com.example.projet_kotlin_ap5.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -7,6 +8,7 @@ import androidx.room.Update
 import com.example.projet_kotlin_ap5.entities.AlbumEntity
 import com.example.projet_kotlin_ap5.entities.SongEntity
 
+@Dao
 interface AlbumDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(albums: List<AlbumEntity>)
@@ -18,10 +20,13 @@ interface AlbumDao {
     suspend fun updateOne(albumEntity: AlbumEntity): Int
 
     @Query("SELECT * FROM album")
-    fun getAllAlbums(): List<AlbumEntity>
+    suspend fun getAllAlbums(): List<AlbumEntity>
 
-    @Query("SELECT * FROM album WHERE album.artist = :artist")
-    suspend fun getAlbumsFromArtist(artist: String): List<AlbumEntity>
+    @Query("SELECT * FROM album LIMIT 5")
+    suspend fun getFirstFiveAlbums(): List<AlbumEntity>
+
+    @Query("SELECT * FROM album WHERE album.artistId = :artistId")
+    suspend fun getAlbumsFromArtist(artistId: Long): List<AlbumEntity>
 
     @Query("SELECT * FROM album WHERE album.id = :id")
     suspend fun getAlbumById(id: Long): AlbumEntity?

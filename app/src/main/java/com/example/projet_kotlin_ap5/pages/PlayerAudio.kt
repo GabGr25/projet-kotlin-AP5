@@ -23,6 +23,7 @@ import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
+import com.example.projet_kotlin_ap5.components.Thumbnail
 import com.example.projet_kotlin_ap5.ui.theme.BackgroundColor
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
@@ -56,20 +57,21 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
         Spacer(modifier = Modifier.height(10.dp))
 
         // Image et détails de la chanson courante
-        playlistInfos.value?.thumbnail?.let {
-            Image(
-                bitmap = it.asImageBitmap(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(280.dp)
-                    .clip(RoundedCornerShape(10.dp))
-            )
-        }
+//        playlistInfos.value?.thumbnail?.let {
+//            Image(
+//                bitmap = it.asImageBitmap(),
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .size(280.dp)
+//                    .clip(RoundedCornerShape(10.dp))
+//            )
+//        }
+        Thumbnail(playlistInfos.value?.thumbnail, 280.dp) { }
 
         Text("${currentSong.value?.title}", color = Color.White, fontSize = 24.sp)
-        Text("${playlistInfos.value.name}", color = Color.LightGray, fontSize = 18.sp)
-        Text("${currentSong.value?.artist}", color = Color.DarkGray, fontSize = 18.sp)
+        Text("${playlistInfos.value?.name}", color = Color.LightGray, fontSize = 18.sp)
+        Text("${currentSong.value?.artistId}", color = Color.DarkGray, fontSize = 18.sp)
 
         // Contrôles de lecture
         Row(

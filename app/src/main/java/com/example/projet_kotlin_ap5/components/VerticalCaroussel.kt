@@ -8,9 +8,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.entities.AlbumEntity
 
 @Composable
-fun VerticalCarousel(navController: NavController, items: List<String>, clickableImageCallback: (String) -> Unit) {
+fun VerticalCarousel(navController: NavController, items: List<AlbumEntity>, clickableImageCallback: (AlbumEntity) -> Unit) {
 
     val pairedItems = items.chunked(2)
 
@@ -28,10 +29,7 @@ fun VerticalCarousel(navController: NavController, items: List<String>, clickabl
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 for (item in pair) {
-                    ClickableImage(
-                        item,
-                        165.dp
-                    ) { handleAlbumClick(navController, item, clickableImageCallback) }
+                    Thumbnail(item.thumbnail, 165.dp) { handleAlbumClick(navController, item, clickableImageCallback) }
                 }
 
                 if (pair.size == 1) {
@@ -42,7 +40,7 @@ fun VerticalCarousel(navController: NavController, items: List<String>, clickabl
     }
 }
 
-fun handleAlbumClick(navController: NavController, album: String, clickableImageCallback: (String) -> Unit) {
+fun handleAlbumClick(navController: NavController, album: AlbumEntity, clickableImageCallback: (AlbumEntity) -> Unit) {
     clickableImageCallback(album)
-    navController.navigate("player_audio/$album")
+    navController.navigate("player_audio/${album.name}")
 }
