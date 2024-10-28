@@ -54,21 +54,11 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Image et détails de la chanson courante
-//        playlistInfos.value?.thumbnail?.let {
-//            Image(
-//                bitmap = it.asImageBitmap(),
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .size(280.dp)
-//                    .clip(RoundedCornerShape(10.dp))
-//            )
-//        }
         Thumbnail(playlistInfos.value?.thumbnail, 280.dp) { }
 
         Text("${currentSong.value?.title}", color = Color.White, fontSize = 24.sp)
         Text("${playlistInfos.value?.name}", color = Color.LightGray, fontSize = 18.sp)
+        // TODO: Afficher le nom de l'artiste
         Text("${currentSong.value?.artistId}", color = Color.DarkGray, fontSize = 18.sp)
 
         // Contrôles de lecture
