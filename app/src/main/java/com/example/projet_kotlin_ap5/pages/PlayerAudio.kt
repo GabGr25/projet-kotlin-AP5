@@ -80,15 +80,15 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            ClickableImage("precedent", 55.dp) {
+            ClickableImage("precedent", 55.dp, Modifier) {
                 audioPlayerService.skipToPreviousSong()
             }
 
-            ClickableImage(if (isPlaying.value) "pause" else "play", 55.dp) {
+            ClickableImage(if (isPlaying.value) "pause" else "play", 55.dp, Modifier) {
                 audioPlayerService.togglePlay()
             }
 
-            ClickableImage("suivant", 55.dp) {
+            ClickableImage("suivant", 55.dp, Modifier) {
                 audioPlayerService.skipToNextSong()
             }
         }

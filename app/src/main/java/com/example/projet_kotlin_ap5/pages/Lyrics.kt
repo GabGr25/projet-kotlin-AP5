@@ -14,7 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
+import com.example.projet_kotlin_ap5.components.EchapButton
 import com.example.projet_kotlin_ap5.components.TitleText
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
@@ -36,13 +38,10 @@ fun Lyrics(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CreateRoundButton(
-                modifier = Modifier
-                    .padding(top = 24.dp, start = 20.dp)
-            ) {
-                currentSong?.let { navController.navigate("player_audio/${it.id}") }
-            }
-            TitleText("Lyrics :", 0.36f)
+            EchapButton { currentSong?.let { navController.navigate("player_audio/${it.id}") } }
+
+            ClickableImage("empty_heart_icon", 40.dp, modifier.padding(top = 24.dp, end = 10.dp)) { Log.d("dev", "Toggle Like Song") }
+            ClickableImage("hamburger_icon", 40.dp, modifier.padding(top = 24.dp, end = 10.dp)) { Log.d("dev", "Affichage menu contextuel") }
         }
 
         if (currentSong?.lyrics != null && currentSong.lyrics != "No lyrics") {
