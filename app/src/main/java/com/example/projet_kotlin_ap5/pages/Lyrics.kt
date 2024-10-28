@@ -68,7 +68,6 @@ fun Lyrics(
         modifier = Modifier
             .fillMaxHeight()
             .zIndex(1f)
-            .verticalScroll(scrollState)
             .background(blurBackground)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -100,26 +99,27 @@ fun Lyrics(
             }
         }
 
-        currentSong?.lyrics?.let {
-            Text(
-                text = it,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = Color.White,
-                fontWeight = FontWeight.W700,
-                fontFamily = lexendFontFamily,
-                modifier = modifier
-                    .padding(top = 24.dp, bottom = 24.dp)
-                    .padding(horizontal = 20.dp)
+        Row(modifier = Modifier.verticalScroll(scrollState).fillMaxSize()) {
+            currentSong?.lyrics?.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.W700,
+                    fontFamily = lexendFontFamily,
+                    modifier = modifier
+                        .padding(top = 24.dp, bottom = 24.dp)
+                        .padding(horizontal = 20.dp)
 
-            )
+                )
 
-            if (currentSong.lyrics == "No lyrics") {
-                ClickableImage("refresh_icon", 25.dp, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    audioPlayerService.refreshCurrentSongLyrics()
+                if (currentSong.lyrics == "No lyrics") {
+                    ClickableImage("refresh_icon", 25.dp, modifier = Modifier.absoluteOffset(x = 50.dp, y = 25.dp)) {
+                        audioPlayerService.refreshCurrentSongLyrics()
+                    }
                 }
             }
         }
-
     }
 }
