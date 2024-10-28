@@ -1,6 +1,5 @@
 package com.example.projet_kotlin_ap5.components
 
-import android.content.ComponentCallbacks
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -14,8 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.projet_kotlin_ap5.pages.PlayerAudio
 
 fun getImageResourceId(context: Context, nameImage: String): Int? {
     val resourceId = context.resources.getIdentifier(nameImage, "drawable", context.packageName)

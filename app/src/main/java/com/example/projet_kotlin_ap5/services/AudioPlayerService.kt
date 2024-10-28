@@ -132,6 +132,11 @@ class AudioPlayerService(private val songViewModel: SongViewModel) {
         }
     }
 
+    fun toggleLike() {
+        // TODO: Implémenter la logique pour aimer une chanson
+        Log.d("dev", "Toggle Like Song for ${_currentSong.value?.title}")
+    }
+
     fun playCurrentSong() {
         if (!mediaPlayer.isPlaying) {
             play()

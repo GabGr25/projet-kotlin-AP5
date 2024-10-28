@@ -16,26 +16,19 @@ import androidx.compose.ui.unit.dp
 import com.example.projet_kotlin_ap5.R
 
 @Composable
-fun CreateFavoriteButton(
-) {
-    var isFavorite by remember { mutableStateOf(false) }
-    var showText by remember { mutableStateOf(false) }
-
+fun HeartButton(isFavorite: Boolean, callback: () -> Unit) {
+    var test: MutableState<Boolean> = remember { mutableStateOf(isFavorite) }
 
         Icon(
-            painter = painterResource(id = if (isFavorite) R.drawable.coeur else R.drawable.coeur),
+            painter = painterResource(id = if (test.value) R.drawable.full_heart_icon else R.drawable.empty_heart_icon),
             contentDescription = null,
-            tint = if (isFavorite) Color.Red else Color.White,  // Changement de couleur selon l'état
+            tint = Color.Red,
             modifier = Modifier
-                .size(58.dp)  // Taille de l'icône
+                .size(64.dp)
+                .padding(top = 24.dp, end = 10.dp)
                 .clickable {
-                    isFavorite = !isFavorite
-                    showText = true
-
-                    // Cacher le texte après 500ms
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        showText = false
-                    }, 500)
+                    test.value = !test.value
+                    callback()
                 }
         )
 
