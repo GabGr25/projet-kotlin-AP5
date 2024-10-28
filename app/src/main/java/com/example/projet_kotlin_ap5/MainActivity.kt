@@ -31,6 +31,10 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModelProvider
 import com.example.projet_kotlin_ap5.viewModel.SongViewModel
 import com.example.projet_kotlin_ap5.viewModel.SongViewModelFactory
@@ -102,19 +106,29 @@ class MainActivity : ComponentActivity() {
             ProjetkotlinAP5Theme {
                 val navController = rememberNavController()
 
+                // Variable d'état pour gérer la visibilité de la barre de navigation
+                var showBottomBar by remember { mutableStateOf(true) }
+
+                // Observez les changements de destination pour la barre de navigation
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    showBottomBar = destination.route !in listOf("Lyrics", "player_audio/{imageName}")
+                }
+
                 // Scaffold with Navbar at the bottom
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     containerColor = BackgroundColor,
                     bottomBar = {
-                        Navbar(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .height(74.dp),
-                            selected = NavbarState.stateNavbar.value,
-                            navController = navController
-                        )
+                        if (showBottomBar) {
+                            Navbar(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .height(74.dp),
+                                selected = NavbarState.stateNavbar.value,
+                                navController = navController
+                            )
+                        }
                     }
                 ) { innerPadding ->
                     Box(
