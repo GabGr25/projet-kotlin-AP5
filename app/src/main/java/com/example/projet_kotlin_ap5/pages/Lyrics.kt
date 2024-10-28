@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.ClickableImage
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
 import com.example.projet_kotlin_ap5.components.EchapButton
+import com.example.projet_kotlin_ap5.components.HeartButton
 import com.example.projet_kotlin_ap5.components.TitleText
 import com.example.projet_kotlin_ap5.services.AudioPlayerService
 import com.example.projet_kotlin_ap5.ui.theme.lexendFontFamily
@@ -35,13 +36,33 @@ fun Lyrics(
             .fillMaxHeight()
             .verticalScroll(scrollState)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            EchapButton { currentSong?.let { navController.navigate("player_audio/${it.id}") } }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.Start
+            ) {
+                EchapButton {
+                    currentSong?.let { navController.navigate("player_audio/${it.id}") }
+                }
+            }
 
-            ClickableImage("empty_heart_icon", 40.dp, modifier.padding(top = 24.dp, end = 10.dp)) { Log.d("dev", "Toggle Like Song") }
-            ClickableImage("hamburger_icon", 40.dp, modifier.padding(top = 24.dp, end = 10.dp)) { Log.d("dev", "Affichage menu contextuel") }
+            Spacer(modifier = Modifier.weight(1f))
+
+            Column(horizontalAlignment = Alignment.End) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // TODO: Remplacer isFavorite par le bon état de la chanson
+                    HeartButton(isFavorite = false) {
+                        audioPlayerService.toggleLike()
+                    }
+                    ClickableImage(
+                        "hamburger_icon",
+                        sizeImage = 50.dp,
+                        modifier = Modifier.padding(top = 24.dp, end = 10.dp)
+                    ) {
+                        Log.d("dev", "Affichage menu contextuel")
+                    }
+                }
+            }
         }
 
         if (currentSong?.lyrics != null && currentSong.lyrics != "No lyrics") {

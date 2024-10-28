@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.ClickableImage
-import com.example.projet_kotlin_ap5.components.CreateFavoriteButton
 import com.example.projet_kotlin_ap5.components.CreateParolesButton
 import com.example.projet_kotlin_ap5.components.CreateRoundButton
 import com.example.projet_kotlin_ap5.components.Thumbnail
@@ -51,7 +50,6 @@ fun PlayerAudio(navController: NavController, songViewModel: SongViewModel, audi
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             CreateRoundButton(modifier = Modifier) { navController.navigate("album") }
-            CreateFavoriteButton()
         }
 
         Spacer(modifier = Modifier.height(10.dp))
