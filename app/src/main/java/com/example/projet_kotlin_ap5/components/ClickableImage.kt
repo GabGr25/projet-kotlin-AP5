@@ -20,23 +20,21 @@ fun getImageResourceId(context: Context, nameImage: String): Int? {
 }
 
 @Composable
-fun ClickableImage(nameImage: String, sizeImage: Dp) {
+fun ClickableImage(nameImage: String, sizeImage: Dp, modifier: Modifier, callback: ()->Unit) {
     val context = LocalContext.current
-    // Obtenir l'identifiant de l'image dynamiquement à partir du nom
     val imageId = getImageResourceId(context, nameImage)
 
-    // Si l'image existe, l'afficher
     imageId?.let {
         Image(
             painter = painterResource(id = it),
             contentDescription = "Clickable Image",
-            modifier = Modifier
+            modifier = modifier
                 .size(sizeImage)
                 .clip(RoundedCornerShape(5.dp))
                 .clickable {
-                    // Action lors du clic
+                    callback()
                 },
-            contentScale = ContentScale.Crop // Ajustement de l'image
+            contentScale = ContentScale.Crop
         )
     }
 }

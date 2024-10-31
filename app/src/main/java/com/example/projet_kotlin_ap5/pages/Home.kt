@@ -9,24 +9,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.projet_kotlin_ap5.components.Caroussel
 import com.example.projet_kotlin_ap5.components.SquareView
 import com.example.projet_kotlin_ap5.components.TitleText
 
 @Composable
-fun Home(modifier: Modifier){
+fun Home(navController: NavController, modifier: Modifier = Modifier){
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(top = 10.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        TitleText("Écoutés récemment", 0.66f)
-        Caroussel(listOf("img1", "img2", "img3", "img4"))
+        TitleText("Écoutés récemment", 0.75f)
+        Caroussel(navController,listOf("memoria", "nibiru", "autobahn", "zinzin"))
 
         Spacer(modifier = Modifier.height(5.dp)) // Espacement entre les deux titres
 
-        TitleText("Playlists du moment", 0.68f)
-        SquareView(listOf("playlist1", "playlist2"), listOf("playlist3", "playlist4"))
+        TitleText("Playlists du moment", 0.79f)
+        SquareView(navController, listOf("playlist1", "playlist2"), listOf("playlist3", "playlist4"))
     }
 }
